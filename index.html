@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>Kiro</title>
+
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="theme-color" content="#0A090B" />
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Kiro" />
+  <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
+
+  <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top-bar">
+      <button class="icon-btn" aria-label="Menu">
+        <img class="icon icon-light" src="./assets/icon-menu.svg" alt="" />
+      </button>
+      <div class="top-bar__title">
+        <img class="logo-mark" src="./assets/logo-kiro-ghost.svg" alt="Kiro" />
+      </div>
+      <button class="icon-btn" aria-label="New">
+        <img class="icon icon-light" src="./assets/icon-add.svg" alt="" />
+      </button>
+    </header>
+
+    <main class="content" id="content">
+      <!-- Placeholder content — swap with the first key screen when ready -->
+      <section class="placeholder">
+        <h1 class="h1">Welcome to Kiro</h1>
+        <p class="primary">
+          This is a scaffolded screen. The top header and bottom bar are fixed; this
+          middle area scrolls beneath them. Replace this section with the first key
+          screen from Figma when the design is ready.
+        </p>
+
+        <div class="card">
+          <h2 class="h2">Fixed chrome</h2>
+          <p class="secondary">
+            The status bar and home indicator come from iOS — when added to the home
+            screen via Safari, the app runs full-screen with the real system chrome
+            on top.
+          </p>
+        </div>
+
+        <!-- Filler to demonstrate scroll behind the fixed bars -->
+        <div class="filler"></div>
+        <div class="filler" style="background:#211D25"></div>
+        <div class="filler"></div>
+        <div class="filler" style="background:#211D25"></div>
+        <div class="filler"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-bar" aria-label="Primary">
+      <button class="tab tab--active" aria-current="page">
+        <img class="icon icon-light" src="./assets/icon-home.svg" alt="" />
+        <span class="tab__label">Home</span>
+      </button>
+      <button class="tab">
+        <img class="icon icon-muted" src="./assets/icon-chat.svg" alt="" />
+        <span class="tab__label">Chat</span>
+      </button>
+      <button class="tab">
+        <img class="icon icon-muted" src="./assets/icon-search.svg" alt="" />
+        <span class="tab__label">Search</span>
+      </button>
+      <button class="tab">
+        <img class="icon icon-muted" src="./assets/icon-inbox.svg" alt="" />
+        <span class="tab__label">Inbox</span>
+      </button>
+      <button class="tab">
+        <img class="icon icon-muted" src="./assets/icon-account.svg" alt="" />
+        <span class="tab__label">You</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

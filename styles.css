@@ -1,0 +1,326 @@
+/* ---------- Fonts ---------- */
+@font-face {
+  font-family: "AWS Diatype Rounded";
+  font-weight: 300;
+  font-style: normal;
+  src: url("./fonts/AWSDiatypeRounded-Light.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "AWS Diatype Rounded";
+  font-weight: 400;
+  font-style: normal;
+  src: url("./fonts/AWSDiatypeRounded-Regular.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "AWS Diatype Rounded";
+  font-weight: 400;
+  font-style: italic;
+  src: url("./fonts/AWSDiatypeRounded-RegularItalic.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "AWS Diatype Rounded";
+  font-weight: 500;
+  font-style: normal;
+  src: url("./fonts/AWSDiatypeRounded-Medium.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "AWS Diatype Rounded";
+  font-weight: 700;
+  font-style: normal;
+  src: url("./fonts/AWSDiatypeRounded-Heavy.otf") format("opentype");
+  font-display: swap;
+}
+@font-face {
+  font-family: "AWS Diatype Rounded";
+  font-weight: 700;
+  font-style: italic;
+  src: url("./fonts/AWSDiatypeRounded-HeavyItalic.otf") format("opentype");
+  font-display: swap;
+}
+
+/* ---------- Design Tokens ---------- */
+:root {
+  /* Brand */
+  --kiro-purple: #8E47FF;
+  --kiro-white:  #FFFFFF;
+  --kiro-plack:  #141217;
+  --kiro-black:  #0A090B;
+
+  /* Purple scale */
+  --purple-100: #D2B6FF;
+  --purple-200: #C19AFF;
+  --purple-300: #B07FFF;
+  --purple-400: #9F63FF;
+  --purple-500: #8E48FF;
+  --purple-600: #8041E6;
+  --purple-700: #723ACC;
+  --purple-800: #6332B2;
+  --purple-900: #552B99;
+
+  /* Prey (Gray) scale */
+  --prey-100: #F2F1F4;
+  --prey-200: #DCDADF;
+  --prey-300: #C1BEC6;
+  --prey-400: #938F9B;
+  --prey-500: #5E5966;
+  --prey-600: #4A464F;
+  --prey-700: #352F3D;
+  --prey-750: #28242E;
+  --prey-800: #211D25;
+  --prey-900: #19161D;
+
+  /* Secondary — Blue */
+  --blue-base: #4285F4;
+  --blue-100: #DDEFFC; --blue-200: #B6D5FB; --blue-300: #90BAF9;
+  --blue-400: #69A0F6; --blue-500: #4285F4; --blue-600: #3B78DC;
+  --blue-700: #356AC3; --blue-800: #2E5DAB; --blue-900: #285092;
+
+  /* Secondary — Teal */
+  --teal-base: #00BBCC;
+  --teal-100: #CCF4F7; --teal-200: #9FE6EB; --teal-300: #72D8DF;
+  --teal-400: #45CBD3; --teal-500: #00BBCC; --teal-600: #01919F;
+  --teal-700: #017B89; --teal-800: #016571; --teal-900: #014F59;
+
+  /* Secondary — Green */
+  --green-base: #00D466;
+  --green-100: #CCF4DF; --green-200: #99E9BF; --green-300: #66DFA0;
+  --green-400: #33D480; --green-500: #00D466; --green-600: #009B4B;
+  --green-700: #008543; --green-800: #006F39; --green-900: #005930;
+
+  /* Secondary — Yellow */
+  --yellow-base: #FED300;
+  --yellow-100: #FFF7CC; --yellow-200: #FCEB99; --yellow-300: #F6DD66;
+  --yellow-400: #F0CF33; --yellow-500: #FED300; --yellow-600: #C6A600;
+  --yellow-700: #A38A00; --yellow-800: #807000; --yellow-900: #5C5500;
+
+  /* Secondary — Orange */
+  --orange-base: #FF4507;
+  --orange-100: #FFE6D5; --orange-200: #FFC6A3; --orange-300: #FFA370;
+  --orange-400: #FF7F3D; --orange-500: #FF4507; --orange-600: #D84F00;
+  --orange-700: #B84300; --orange-800: #973800; --orange-900: #752D00;
+
+  /* Secondary — Red */
+  --red-base: #FF0425;
+  --red-100: #FFE0E3; --red-200: #FFB3BB; --red-300: #FF7A88;
+  --red-400: #F94359; --red-500: #FF0425; --red-600: #DE112C;
+  --red-700: #BC0E26; --red-800: #990B20; --red-900: #770819;
+
+  /* Secondary — Pink */
+  --pink-base: #EF15FF;
+  --pink-100: #FCDDFE; --pink-200: #F8B4FB; --pink-300: #F28EF7;
+  --pink-400: #E65DEB; --pink-500: #EF15FF; --pink-600: #B014BB;
+  --pink-700: #9611A1; --pink-800: #7A0E84; --pink-900: #5E0B66;
+
+  /* Surfaces (dark theme default) */
+  --bg-app:     var(--kiro-black);
+  --bg-chrome:  rgba(10, 9, 11, 0.85); /* translucent for scroll-behind */
+  --bg-surface: var(--prey-800);
+  --fg-default: var(--kiro-white);
+  --fg-muted:   var(--prey-300);
+  --divider:    var(--prey-700);
+
+  /* Fixed-bar heights (excluding safe-area) */
+  --top-bar-h:    52px;
+  --bottom-bar-h: 64px;
+
+  /* Font stacks */
+  --font-ui:     "AWS Diatype Rounded", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:   Menlo, ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-app);
+  color: var(--fg-default);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  line-height: 22px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+}
+
+body {
+  /* Lock the page; scrolling happens inside .content */
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ---------- Typography ramps ---------- */
+.h1       { font: 400 28px/34px var(--font-ui); margin: 0; }
+.h2       { font: 700 22px/28px var(--font-ui); margin: 0; }
+.h3       { font: 700 20px/25px var(--font-ui); margin: 0; }
+.h4       { font: 700 15px/20px var(--font-ui); margin: 0; }
+.primary  { font: 400 17px/22px var(--font-ui); margin: 0; }
+.secondary{ font: 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
+.comment  { font: italic 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
+.caption  { font: 400 12px/16px var(--font-ui); margin: 0; }
+.micro    { font: 400 11px/11px var(--font-ui); margin: 0; }
+.code     { font: 400 14px/18px var(--font-mono); letter-spacing: -0.03em; }
+.code-sm  { font: 400 12px/20px var(--font-mono); letter-spacing: -0.03em; }
+
+/* ---------- Icon color via CSS filter ----------
+   Source SVGs are white. Filters tint white -> target color. */
+.icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  /* default = white, no filter */
+}
+.icon-light { /* keep white */ filter: none; }
+.icon-dark  { filter: brightness(0) saturate(100%); } /* solid black */
+.icon-muted { filter: brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%); }
+.icon-purple{ filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(3504%) hue-rotate(257deg) brightness(102%) contrast(102%); }
+
+/* ---------- App shell ---------- */
+.app {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--bg-app);
+}
+
+/* ---------- Top bar (fixed) ----------
+   - Sits behind the iOS status bar (black-translucent), so we add
+     env(safe-area-inset-top) of padding.
+   - Translucent + backdrop-filter so middle content can be seen scrolling behind it. */
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: calc(var(--top-bar-h) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right));
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  background: var(--bg-chrome);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.top-bar__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-mark {
+  height: 22px;
+  width: auto;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.icon-btn:active { background: rgba(255,255,255,0.06); }
+
+/* ---------- Scrollable content ----------
+   The fixed bars are part of the grid (so they take their own row),
+   but we still let content scroll *behind* them visually by giving
+   the content extra top/bottom padding equal to bar height. */
+.content {
+  grid-row: 2;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  /* Pull content up under the translucent top bar */
+  margin-top: calc(-1 * (var(--top-bar-h) + env(safe-area-inset-top)));
+  margin-bottom: calc(-1 * (var(--bottom-bar-h) + env(safe-area-inset-bottom)));
+  padding-top: calc(var(--top-bar-h) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ---------- Bottom bar (fixed) ---------- */
+.bottom-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  height: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom));
+  padding: 0 max(8px, env(safe-area-inset-left)) env(safe-area-inset-bottom) max(8px, env(safe-area-inset-right));
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: stretch;
+  background: var(--bg-chrome);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: var(--bottom-bar-h);
+  color: var(--prey-400);
+}
+.tab__label {
+  font: 400 11px/11px var(--font-ui);
+  letter-spacing: 0.01em;
+}
+.tab--active           { color: var(--kiro-white); }
+.tab--active .icon     { filter: none; }
+.tab--active .tab__label { color: var(--kiro-white); }
+
+/* ---------- Placeholder content styling ---------- */
+.placeholder {
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: var(--bg-surface);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filler {
+  height: 220px;
+  border-radius: 14px;
+  background: var(--prey-900);
+}

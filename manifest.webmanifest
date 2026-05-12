@@ -1,0 +1,19 @@
+{
+  "name": "Kiro",
+  "short_name": "Kiro",
+  "description": "Kiro mobile",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A090B",
+  "theme_color": "#0A090B",
+  "icons": [
+    {
+      "src": "assets/kiro-app.png",
+      "sizes": "2048x2048",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
