@@ -477,14 +477,14 @@ html, body { height: 100lvh; }
   padding: 8px 0 24px;
 }
 
-/* Shared divider for both list types. The `--row-inset` knob lets a
-   parent override the inset if a screen needs a different alignment. */
-.feature-item,
+/* Shared inset-divider rule. The `--row-inset` knob lets a parent
+   override the inset if a screen needs a different alignment.
+   Feature pills don't get a divider (they read as a tight grouping
+   above the Pinned section). */
 .item {
   --row-inset: 24px;
   position: relative;
 }
-.feature-item::after,
 .item::after {
   content: "";
   position: absolute;
