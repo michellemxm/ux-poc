@@ -15,25 +15,27 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=11" />
+  <link rel="stylesheet" href="./styles.css?v=12" />
 </head>
 <body>
   <div class="app">
 
     <header class="top-bar top-bar--chat">
-      <a class="icon-btn icon-btn--lone" href="./index.html" aria-label="Back to menu">
-        <img class="icon icon-light" src="./assets/icon-arrow-left.svg" alt="" />
+      <a class="icon-btn icon-btn--pill" href="./index.html" aria-label="Menu">
+        <img class="icon icon-light" src="./assets/icon-menu.svg" alt="" />
       </a>
-      <button class="chat-title" type="button" aria-haspopup="true">
-        <span class="chat-title__name">Claude Opus 4.6</span>
-        <img class="icon icon-subtle chat-title__caret" src="./assets/icon-chevron-down.svg" alt="" />
-        <span class="chat-title__meta">1M Context · Pro</span>
-      </button>
-      <div class="top-bar__actions top-bar__actions--chat">
-        <button class="icon-btn" aria-label="More">
-          <img class="icon icon-light" src="./assets/icon-kebab-vertical.svg" alt="" />
+      <div class="chat-title">
+        <button class="chat-title__selector" type="button" aria-haspopup="true">
+          <span class="chat-title__name">Claude Opus 4.6</span>
+          <img class="chat-title__caret icon icon-light" src="./assets/icon-chevron-down.svg" alt="" />
         </button>
-        <button class="icon-btn" aria-label="New chat">
+        <span class="chat-title__meta">1M Context · High</span>
+      </div>
+      <div class="top-bar__actions">
+        <button class="icon-btn" aria-label="More">
+          <img class="icon icon-light" src="./assets/icon-ellipsis.svg" alt="" />
+        </button>
+        <button class="icon-btn icon-btn--inset-circle" aria-label="New chat">
           <img class="icon icon-light" src="./assets/icon-edit.svg" alt="" />
         </button>
       </div>
@@ -336,18 +338,19 @@
     </main>
 
     <div class="bottom-bar bottom-bar--chat" role="search">
-      <div class="search-row">
-        <div class="search-field">
-          <input class="search-input" type="text" placeholder="Ask Kiro…" aria-label="Ask Kiro" />
-          <button class="icon-btn icon-btn--sm" aria-label="Voice">
-            <img class="icon icon-muted" src="./assets/icon-mic.svg" alt="" />
-          </button>
-        </div>
+      <div class="chat-input">
+        <button class="icon-btn" aria-label="Add attachment">
+          <img class="icon icon-light" src="./assets/icon-add.svg" alt="" />
+        </button>
+        <input class="chat-input__field" type="text" placeholder="Ask Kiro…" aria-label="Ask Kiro" />
+        <button class="icon-btn icon-btn--inset-circle" aria-label="Voice">
+          <img class="icon icon-light" src="./assets/icon-mic.svg" alt="" />
+        </button>
       </div>
     </div>
 
   </div>
 
-  <script src="./app.js?v=11"></script>
+  <script src="./app.js?v=12"></script>
 </body>
 </html>

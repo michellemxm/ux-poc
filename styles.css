@@ -578,79 +578,72 @@ html, body { height: 100lvh; }
    Chat screen (chat.html)
    ============================================================= */
 
-/* Top-bar variant: back arrow + stacked model selector + actions */
+/* Top-bar variant: pill menu button + left-aligned model selector +
+   shared-pill right actions. Visual conventions stay aligned with the
+   menu screen — same pill radius, same shadow, same safe-area math. */
 .top-bar--chat {
-  /* Same fixed positioning + safe-area handling as .top-bar.
-     Only the inner layout differs. */
-  gap: 8px;
-  padding-left:  max(8px, env(safe-area-inset-left));
-  padding-right: max(8px, env(safe-area-inset-right));
+  gap: 12px;  /* 12px between menu button and model selector */
+  padding-left:  max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
 }
 
-/* Standalone icon button (no shared pill container). */
-.icon-btn--lone {
-  width: 40px;
-  height: 40px;
+/* Single-button pill, used for the menu / back button on the chat
+   screen. Same 48x48 / 20-radius / soft shadow as .top-bar__actions. */
+.icon-btn--pill {
+  width: 48px;
+  height: 48px;
   border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
   text-decoration: none;
 }
+.icon-btn--pill:active { background: var(--prey-100); }
 
-/* Center title: model name + caret + meta on a second line. */
+/* Small circular inset button used inside a parent pill / chat input.
+   Matches Figma's `chat-action-button` and the M-avatar treatment:
+   32x32, fully round, Prey/200 background. */
+.icon-btn--inset-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--prey-200);
+  flex: 0 0 auto;
+}
+.icon-btn--inset-circle:active { background: var(--prey-300); }
+
+/* Title block — left-aligned model selector + meta line. */
 .chat-title {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
-  align-items: center;
-  justify-content: center;
-  column-gap: 4px;
   flex: 1;
   min-width: 0;
-  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+}
+.chat-title__selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: transparent;
-  color: var(--fg-default);
-  text-align: center;
-}
-.chat-title__name {
-  grid-column: 1;
-  grid-row: 1;
-  font: 700 15px/20px var(--font-ui);
-  color: var(--fg-default);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.chat-title__caret {
-  grid-column: 2;
-  grid-row: 1;
-  width: 12px;
-  height: 12px;
-}
-.chat-title__meta {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  font: 400 11px/14px var(--font-ui);
-  color: var(--fg-subtle);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Chat top-bar actions: two flat icon buttons side-by-side, no shared
-   pill (matches the chat-screen mock). */
-.top-bar__actions--chat {
-  background: transparent;
-  box-shadow: none;
   padding: 0;
-  height: auto;
-  border-radius: 0;
+  max-width: 100%;
 }
-.top-bar__actions--chat .icon-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
+.chat-title__selector:active { opacity: 0.6; }
+.chat-title__name {
+  font: 700 17px/22px var(--font-ui);
+  color: var(--fg-default);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-title__caret { width: 12px; height: 12px; flex: 0 0 auto; }
+.chat-title__meta {
+  font: 400 11px/14px var(--font-ui);
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* -------- Conversation -------- */
@@ -838,16 +831,35 @@ html, body { height: 100lvh; }
 .hl-added    { color: var(--green-700); display: block; background: var(--green-100); margin: 0 -14px; padding: 0 14px; }
 .hl-removed  { color: var(--red-700);   display: block; background: var(--red-100);   margin: 0 -14px; padding: 0 14px; text-decoration: line-through; }
 
-/* -------- Bottom bar variant for chat -------- */
+/* -------- Bottom bar variant for chat ----------
+   This is a CHAT INPUT, not a search field — it's purpose-built for
+   sending messages, hence its own class. Layout: + action on the
+   left, free-form text input in the middle, mic in a Prey/200 circle
+   on the right. The surrounding rounded white pill carries the
+   --shadow-soft and 20px radius the menu screen's search field uses. */
 
-.bottom-bar--chat .search-field {
-  padding-right: 4px;
-}
-.bottom-bar--chat .icon-btn--sm {
-  width: 40px;
-  height: 40px;
+.chat-input {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+  padding: 8px;
+  background: var(--bg-surface);
   border-radius: 20px;
+  box-shadow: var(--shadow-soft);
 }
+.chat-input__field {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--fg-default);
+  font: 400 17px/22px var(--font-ui);
+  padding: 0 4px;
+}
+.chat-input__field::placeholder { color: var(--fg-subtle); }
 
 /* Item link wrapper — turns a whole .item into a tappable navigation
    target without changing its visual layout. */

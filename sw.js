@@ -1,4 +1,4 @@
-const CACHE = "kiro-v11";
+const CACHE = "kiro-v12";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -21,7 +21,8 @@ const PRECACHE = [
   "./assets/icon-arrow-left.svg",
   "./assets/icon-chevron-down.svg",
   "./assets/icon-chevron-right.svg",
-  "./assets/icon-kebab-vertical.svg",
+  "./assets/icon-ellipsis.svg",
+  "./assets/icon-add.svg",
   "./assets/icon-mic.svg",
   "./assets/icon-terminal.svg",
   "./assets/icon-play.svg",
