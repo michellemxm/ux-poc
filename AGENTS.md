@@ -211,6 +211,8 @@ The full ramp (light theme):
 | `.code` | `400 14px/18px var(--font-mono)` |
 | `.code-sm` | `400 12px/20px var(--font-mono)` |
 
+Inline `<strong>` and `<b>` are explicitly set to `font-weight: 600` in `styles.css` (the browser default of `bold` = 700 reads too heavy next to the 600 ramp). All bold emphasis — ramp tiers, `<strong>`, custom badges — should be 600 unless there's a very specific reason to go heavier.
+
 When the design feels like it needs a value outside the ramp, **pick the closest ramp and use its values exactly**. Don't synthesize new values. If a real new ramp is needed, define it once in the ramp section and add it to this table.
 
 Font stack:

@@ -231,8 +231,8 @@ img {
 
 /* ---------- Typography ramps ---------- */
 .h1       { font: 400 28px/34px var(--font-ui); margin: 0; }
-.h2       { font: 700 22px/28px var(--font-ui); margin: 0; }
-.h3       { font: 700 20px/25px var(--font-ui); margin: 0; }
+.h2       { font: 600 22px/28px var(--font-ui); margin: 0; }
+.h3       { font: 600 20px/25px var(--font-ui); margin: 0; }
 .h4       { font: 600 15px/20px var(--font-ui); margin: 0; }
 .primary  { font: 400 17px/22px var(--font-ui); margin: 0; }
 .secondary{ font: 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
@@ -241,6 +241,11 @@ img {
 .micro    { font: 400 11px/11px var(--font-ui); margin: 0; }
 .code     { font: 400 14px/18px var(--font-mono); letter-spacing: -0.03em; }
 .code-sm  { font: 400 12px/20px var(--font-mono); letter-spacing: -0.03em; }
+
+/* Inline emphasis. The browser's UA stylesheet sets <strong>/<b> to
+   `font-weight: bold` (= 700); we override to 600 so emphasis matches
+   the bold tier the ramp uses (h2/h3/h4 are all 600). */
+strong, b { font-weight: 600; }
 
 /* ---------- Icon color via CSS filter ----------
    Source SVGs are white. Filters tint white -> target color. The four
