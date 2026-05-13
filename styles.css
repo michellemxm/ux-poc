@@ -184,6 +184,22 @@
   --font-ui:     "AWS Diatype Rounded", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro", "Helvetica Neue", Arial, sans-serif;
   --font-mono:   Menlo, ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
+
+  /* ---------- Typography ramps (single source of truth) ----------
+     Each ramp is a font: shorthand. Components consume these via
+     `font: var(--type-X);` instead of copying values — so adjusting a
+     ramp here updates every component that uses it. */
+  --type-h1:        400 28px/34px var(--font-ui);
+  --type-h2:        600 22px/28px var(--font-ui);
+  --type-h3:        600 20px/25px var(--font-ui);
+  --type-h4:        500 15px/20px var(--font-ui);
+  --type-primary:   400 17px/22px var(--font-ui);
+  --type-secondary: 400 15px/20px var(--font-ui);
+  --type-comment:   italic 400 15px/20px var(--font-ui);
+  --type-caption:   400 12px/16px var(--font-ui);
+  --type-micro:     400 11px/11px var(--font-ui);
+  --type-code:      400 14px/18px var(--font-mono);
+  --type-code-sm:   400 12px/20px var(--font-mono);
 }
 
 /* ---------- Reset ---------- */
@@ -230,22 +246,22 @@ img {
 }
 
 /* ---------- Typography ramps ---------- */
-.h1       { font: 400 28px/34px var(--font-ui); margin: 0; }
-.h2       { font: 600 22px/28px var(--font-ui); margin: 0; }
-.h3       { font: 600 20px/25px var(--font-ui); margin: 0; }
-.h4       { font: 600 15px/20px var(--font-ui); margin: 0; }
-.primary  { font: 400 17px/22px var(--font-ui); margin: 0; }
-.secondary{ font: 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
-.comment  { font: italic 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
-.caption  { font: 400 12px/16px var(--font-ui); margin: 0; }
-.micro    { font: 400 11px/11px var(--font-ui); margin: 0; }
-.code     { font: 400 14px/18px var(--font-mono); letter-spacing: -0.03em; }
-.code-sm  { font: 400 12px/20px var(--font-mono); letter-spacing: -0.03em; }
+.h1       { font: var(--type-h1); margin: 0; }
+.h2       { font: var(--type-h2); margin: 0; }
+.h3       { font: var(--type-h3); margin: 0; }
+.h4       { font: var(--type-h4); margin: 0; }
+.primary  { font: var(--type-primary); margin: 0; }
+.secondary{ font: var(--type-secondary); margin: 0; color: var(--fg-muted); }
+.comment  { font: var(--type-comment); margin: 0; color: var(--fg-muted); }
+.caption  { font: var(--type-caption); margin: 0; }
+.micro    { font: var(--type-micro); margin: 0; }
+.code     { font: var(--type-code); letter-spacing: -0.03em; }
+.code-sm  { font: var(--type-code-sm); letter-spacing: -0.03em; }
 
 /* Inline emphasis. The browser's UA stylesheet sets <strong>/<b> to
    `font-weight: bold` (= 700); we override to 600 so emphasis matches
    the bold tier the ramp uses (h2/h3/h4 are all 600). */
-strong, b { font-weight: 600; }
+strong, b { font-weight: 500; }
 
 /* ---------- Icon color via CSS filter ----------
    Source SVGs are white. Filters tint white -> target color. The four
@@ -374,7 +390,7 @@ html, body { height: 100lvh; }
   border-radius: 50%;
   background: var(--prey-200);
   color: var(--fg-default);
-  font: 600 15px/20px var(--font-ui);          /* H4 */
+  font: var(--type-h4);                /* H4 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -451,7 +467,7 @@ html, body { height: 100lvh; }
   border: 0;
   outline: none;
   color: var(--fg-default);
-  font: 400 17px/22px var(--font-ui);          /* Primary */
+  font: var(--type-primary);                /* Primary */
   padding: 0 4px;
 }
 .search-input::placeholder { color: var(--fg-subtle); }
@@ -520,7 +536,7 @@ html, body { height: 100lvh; }
 }
 .feature-item:active { background: var(--pressed); }
 .feature-item__label {
-  font: 400 17px/22px var(--font-ui);          /* Primary */
+  font: var(--type-primary);                /* Primary */
 }
 
 /* Section header — no rule below it. */
@@ -536,12 +552,12 @@ html, body { height: 100lvh; }
 }
 .section-header__title {
   margin: 0;
-  font: 400 12px/16px var(--font-ui);          /* Caption */
+  font: var(--type-caption);                /* Caption */
   color: var(--fg-subtle);
   letter-spacing: 0.02em;
 }
 .section-header__action {
-  font: 400 12px/16px var(--font-ui);          /* Caption */
+  font: var(--type-caption);                /* Caption */
   color: var(--fg-accent);
   text-decoration: none;
 }
@@ -563,7 +579,7 @@ html, body { height: 100lvh; }
 .item:active { background: var(--pressed); }
 .item__title {
   margin: 0;
-  font: 400 17px/22px var(--font-ui);          /* Primary */
+  font: var(--type-primary);                /* Primary */
   color: var(--fg-default);
   /* Truncate to a single line like the Figma mock */
   overflow: hidden;
@@ -572,7 +588,7 @@ html, body { height: 100lvh; }
 }
 .item__meta {
   margin: 0;
-  font: 400 12px/16px var(--font-ui);          /* Caption */
+  font: var(--type-caption);                /* Caption */
   color: var(--fg-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -643,7 +659,7 @@ html, body { height: 100lvh; }
 }
 .chat-title__selector:active { opacity: 0.6; }
 .chat-title__name {
-  font: 600 15px/20px var(--font-ui);          /* H4 */
+  font: var(--type-h4);                /* H4 */
   color: var(--fg-default);
   white-space: nowrap;
   overflow: hidden;
@@ -651,7 +667,7 @@ html, body { height: 100lvh; }
 }
 .chat-title__caret { width: 12px; height: 12px; flex: 0 0 auto; }
 .chat-title__meta {
-  font: 400 11px/11px var(--font-ui);          /* Micro */
+  font: var(--type-micro);                /* Micro */
   color: var(--fg-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -671,7 +687,7 @@ html, body { height: 100lvh; }
 
 .msg__text {
   margin: 0;
-  font: 400 17px/22px var(--font-ui);          /* Primary */
+  font: var(--type-primary);                /* Primary */
   color: var(--fg-default);
 }
 .msg__text + .msg__text { margin-top: 6px; }
@@ -682,7 +698,7 @@ html, body { height: 100lvh; }
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font: 400 17px/22px var(--font-ui);          /* Primary */
+  font: var(--type-primary);                /* Primary */
 }
 
 /* User message: right-aligned light-purple bubble. */
@@ -705,7 +721,7 @@ html, body { height: 100lvh; }
 
 /* Inline code (kept neutral on agent text, theme-color on user bubble) */
 .inline-code {
-  font: 400 14px/18px var(--font-mono);         /* Code */
+  font: var(--type-code);                /* Code */
   background: rgba(0, 0, 0, 0.05);
   border-radius: 5px;
   padding: 1px 5px;
@@ -717,7 +733,7 @@ html, body { height: 100lvh; }
   padding: 4px 0 4px 14px;
   border-left: 2px solid var(--divider);
   color: var(--fg-muted);
-  font: italic 400 15px/20px var(--font-ui);   /* Comment */
+  font: var(--type-comment);                /* Comment */
 }
 .msg__aside .inline-code { font-style: normal; }
 
@@ -766,14 +782,14 @@ html, body { height: 100lvh; }
 }
 
 .op-row__kind {
-  font: 400 15px/20px var(--font-ui);          /* Secondary */
+  font: var(--type-secondary);                /* Secondary */
   color: var(--fg-default);
   flex: 0 0 auto;
 }
 .op-row__title {
   flex: 1;
   min-width: 0;
-  font: 400 14px/18px var(--font-mono);         /* Code */
+  font: var(--type-code);                /* Code */
   color: var(--fg-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -788,14 +804,14 @@ html, body { height: 100lvh; }
   padding: 1px 6px;
   background: var(--prey-200);
   border-radius: 5px;
-  font: 400 12px/20px var(--font-mono);         /* Code-sm */
+  font: var(--type-code-sm);                /* Code-sm */
   color: var(--fg-default);
   flex: 0 0 auto;
 }
 .op-row__filepill__ext {
   background: var(--prey-300);
   color: var(--fg-default);
-  font: 400 11px/11px var(--font-ui);          /* Micro */
+  font: var(--type-micro);                /* Micro */
   padding: 0 4px;
   border-radius: 3px;
   letter-spacing: 0.02em;
@@ -804,7 +820,7 @@ html, body { height: 100lvh; }
 
 /* Status / count badges on the right edge of the row. */
 .op-row__pill {
-  font: 400 11px/11px var(--font-ui);          /* Micro */
+  font: var(--type-caption);                /* Caption */
   padding: 3px 8px;
   border-radius: 999px;
   letter-spacing: 0.02em;
@@ -814,7 +830,7 @@ html, body { height: 100lvh; }
 .op-row__pill--fail { background: var(--red-100);   color: var(--red-700); }
 .op-row__pill--warn { background: var(--yellow-100); color: var(--yellow-700); }
 
-.op-row__stat { font: 400 12px/20px var(--font-mono); flex: 0 0 auto; }  /* Code-sm */
+.op-row__stat { font: var(--type-code-sm); flex: 0 0 auto; }  /* Code-sm */
 .op-row__stat--add { color: var(--green-600); }
 .op-row__stat--del { color: var(--red-600); }
 
@@ -909,12 +925,12 @@ dialog.sheet::backdrop {
 }
 .sheet__title {
   margin: 0;
-  font: 600 15px/20px var(--font-ui);          /* H4 */
+  font: var(--type-h4);                /* H4 */
   color: var(--fg-default);
 }
 .sheet__subtitle {
   margin: 0;
-  font: 400 12px/16px var(--font-ui);          /* Caption */
+  font: var(--type-caption);                /* Caption */
   color: var(--fg-muted);
 }
 
@@ -927,7 +943,7 @@ dialog.sheet::backdrop {
 
 .sheet__section-label {
   margin: 12px 0 6px;
-  font: 400 12px/16px var(--font-ui);          /* Caption */
+  font: var(--type-caption);                /* Caption */
   color: var(--fg-subtle);
   letter-spacing: 0.02em;
 }
@@ -935,7 +951,7 @@ dialog.sheet::backdrop {
 .sheet__code {
   margin: 0;
   padding: 12px;
-  font: 400 12px/20px var(--font-mono);         /* Code-sm */
+  font: var(--type-code-sm);                /* Code-sm */
   background: var(--prey-100);
   border-radius: 10px;
   color: var(--fg-default);
@@ -946,7 +962,7 @@ dialog.sheet::backdrop {
 .sheet__diff {
   margin: 0;
   padding: 0;
-  font: 400 14px/18px var(--font-mono);         /* Code */
+  font: var(--type-code);                /* Code */
   background: var(--prey-100);
   color: var(--fg-default);
   overflow-x: auto;
@@ -1000,7 +1016,7 @@ dialog.sheet::backdrop {
   border: 0;
   outline: none;
   color: var(--fg-default);
-  font: 400 17px/22px var(--font-ui);          /* Primary */
+  font: var(--type-primary);                /* Primary */
   padding: 0 4px;
 }
 .chat-input__field::placeholder { color: var(--fg-subtle); }

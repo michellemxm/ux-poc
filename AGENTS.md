@@ -185,35 +185,36 @@ These are what components read. Never hard-code `rgba(255,255,255,...)` or simil
 | `--shadow-soft` | `0 1px 16px rgba(0,0,0,0.10)` | raised surface `box-shadow` (search field, compose btn, top-bar action pill). Dark theme overrides to `none`. |
 | `--shadow-icon` | `drop-shadow(0 1px 16px rgba(0,0,0,0.10))` | filter-based shadow for floating SVG icons (brand ghost). Dark theme overrides to `none`. |
 
-### Typography classes
+### Typography
 
-Use the typography ramp classes (`.h1`, `.h2`, `.h3`, `.h4`, `.primary`, `.secondary`, `.comment`, `.caption`, `.micro`, `.code`, `.code-sm`) defined at the top of `styles.css`. **No one-off `font-size`/`line-height` per component** — even when you write a `font:` shorthand inside a component rule, the *values* must match a ramp exactly, and the ramp name belongs in a trailing comment:
+Each ramp is defined **once**, as a CSS variable in `:root`. The ramp classes and every component consume it via `font: var(--type-X);` — so adjusting a ramp updates everywhere automatically.
 
 ```css
+:root {
+  --type-h1:        400 28px/34px var(--font-ui);
+  --type-h2:        600 22px/28px var(--font-ui);
+  --type-h3:        600 20px/25px var(--font-ui);
+  --type-h4:        500 15px/20px var(--font-ui);
+  --type-primary:   400 17px/22px var(--font-ui);
+  --type-secondary: 400 15px/20px var(--font-ui);
+  --type-comment:   italic 400 15px/20px var(--font-ui);
+  --type-caption:   400 12px/16px var(--font-ui);
+  --type-micro:     400 11px/11px var(--font-ui);
+  --type-code:      400 14px/18px var(--font-mono);
+  --type-code-sm:   400 12px/20px var(--font-mono);
+}
+
+.h1 { font: var(--type-h1); margin: 0; }
+/* …etc. for each ramp class… */
+
 .section-header__title {
-  font: 400 12px/16px var(--font-ui);    /* Caption */
+  font: var(--type-caption);    /* Caption */
 }
 ```
 
-The full ramp (light theme):
+**Component CSS must never copy a ramp's literal values.** Use the variable, and put the ramp name in a trailing comment so it's grep-able. When you need something the ramps don't cover, pick the closest existing one and use its variable; if a genuinely new ramp is needed, define a new `--type-…` variable + matching `.classname` ramp class, then reference the variable everywhere.
 
-| Ramp | `font:` value |
-|---|---|
-| `.h1` | `400 28px/34px var(--font-ui)` |
-| `.h2` | `700 22px/28px var(--font-ui)` |
-| `.h3` | `700 20px/25px var(--font-ui)` |
-| `.h4` | `600 15px/20px var(--font-ui)` |
-| `.primary` | `400 17px/22px var(--font-ui)` |
-| `.secondary` | `400 15px/20px var(--font-ui)` |
-| `.comment` | `italic 400 15px/20px var(--font-ui)` |
-| `.caption` | `400 12px/16px var(--font-ui)` |
-| `.micro` | `400 11px/11px var(--font-ui)` |
-| `.code` | `400 14px/18px var(--font-mono)` |
-| `.code-sm` | `400 12px/20px var(--font-mono)` |
-
-Inline `<strong>` and `<b>` are explicitly set to `font-weight: 600` in `styles.css` (the browser default of `bold` = 700 reads too heavy next to the 600 ramp). All bold emphasis — ramp tiers, `<strong>`, custom badges — should be 600 unless there's a very specific reason to go heavier.
-
-When the design feels like it needs a value outside the ramp, **pick the closest ramp and use its values exactly**. Don't synthesize new values. If a real new ramp is needed, define it once in the ramp section and add it to this table.
+Inline `<strong>` and `<b>` are explicitly set to `font-weight: 600` in `styles.css` (the browser default of `bold` = 700 reads too heavy next to the lighter ramp). All bold emphasis — ramp tiers, `<strong>`, custom badges — should be 600 unless there's a very specific reason to go heavier.
 
 Font stack:
 - UI: `"AWS Diatype Rounded"` (loaded from `fonts/`)
