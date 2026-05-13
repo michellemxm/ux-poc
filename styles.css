@@ -580,11 +580,12 @@ html, body { height: 100lvh; }
 
 /* Top-bar variant: pill menu button + left-aligned model selector +
    shared-pill right actions. Visual conventions stay aligned with the
-   menu screen — same pill radius, same shadow, same safe-area math. */
+   menu screen — same pill radius, same shadow, same safe-area math.
+   Horizontal padding matches the bottom bar (20px) for symmetry. */
 .top-bar--chat {
-  gap: 12px;  /* 12px between menu button and model selector */
-  padding-left:  max(12px, env(safe-area-inset-left));
-  padding-right: max(12px, env(safe-area-inset-right));
+  gap: 12px;
+  padding-left:  max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
 }
 
 /* Single-button pill, used for the menu / back button on the chat
@@ -602,18 +603,20 @@ html, body { height: 100lvh; }
 /* Small inset button used inside a parent pill / chat input.
    32x32, Prey/200 background. Two shapes:
      --inset-circle  = fully round (M avatar on menu, mic in chat input)
-     --inset-rounded = squircle with 10px radius (new-chat on chat top bar) */
-.icon-btn--inset-circle,
-.icon-btn--inset-rounded {
+     --inset-rounded = squircle with 10px radius (new-chat on chat top bar)
+   Chained with .icon-btn so the descendant rule `.top-bar__actions
+   .icon-btn` (specificity 0,2,0) can't shrink them. */
+.icon-btn.icon-btn--inset-circle,
+.icon-btn.icon-btn--inset-rounded {
   width: 32px;
   height: 32px;
   background: var(--prey-200);
   flex: 0 0 auto;
 }
-.icon-btn--inset-circle  { border-radius: 50%; }
-.icon-btn--inset-rounded { border-radius: 10px; }
-.icon-btn--inset-circle:active,
-.icon-btn--inset-rounded:active { background: var(--prey-300); }
+.icon-btn.icon-btn--inset-circle  { border-radius: 50%; }
+.icon-btn.icon-btn--inset-rounded { border-radius: 10px; }
+.icon-btn.icon-btn--inset-circle:active,
+.icon-btn.icon-btn--inset-rounded:active { background: var(--prey-300); }
 
 /* Title block — left-aligned model selector + meta line. */
 .chat-title {
@@ -731,102 +734,224 @@ html, body { height: 100lvh; }
 }
 .msg-action:active { background: var(--pressed); }
 
-/* -------- Agent operation card (collapsible) -------- */
+/* -------- Agent operation row ----------
+   Flat single-line row — NO container, NO bg, NO shadow. Tapping
+   opens a bottom-sheet modal with the full detail (.sheet below).
+   The chevron hints that tapping reveals more. */
 
-.op {
-  background: var(--bg-surface);
-  border: 1px solid var(--divider);
-  border-radius: 14px;
-  box-shadow: var(--shadow-soft);
-  overflow: hidden;
-}
-/* Hide the default disclosure triangle */
-.op > summary { list-style: none; }
-.op > summary::-webkit-details-marker { display: none; }
-
-.op__row {
+.op-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 0;
+  min-height: 36px;
+  background: transparent;
+  border: 0;
+  text-align: left;
   cursor: pointer;
-  user-select: none;
-  min-height: 44px;
+  color: inherit;
 }
-.op__row:active { background: var(--pressed); }
+.op-row:active { opacity: 0.6; }
 
-.op__icon {
+.op-row__icon {
   width: 16px;
   height: 16px;
   flex: 0 0 auto;
 }
 
-.op__label {
+.op-row__kind {
+  font: 700 15px/22px var(--font-ui);
+  color: var(--fg-default);
+  flex: 0 0 auto;
+}
+.op-row__title {
   flex: 1;
   min-width: 0;
-  font: 400 14px/18px var(--font-ui);
-  color: var(--fg-default);
+  font: 400 13px/18px var(--font-mono);
+  color: var(--fg-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.op__kind {
-  font-weight: 600;
+
+/* Inline file pill (e.g. "TS util.ts"): small gray rounded chip. */
+.op-row__filepill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  background: var(--prey-200);
+  border-radius: 5px;
+  font: 600 12px/16px var(--font-mono);
   color: var(--fg-default);
+  flex: 0 0 auto;
 }
-.op__title {
-  font: 400 13px/18px var(--font-mono);
-  color: var(--fg-muted);
+.op-row__filepill__ext {
+  background: var(--prey-300);
+  color: var(--fg-default);
+  font: 700 10px/14px var(--font-mono);
+  padding: 0 4px;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-/* Status / count badges on the right edge of the op row. */
-.op__pill {
-  font: 600 11px/14px var(--font-mono);
+/* Status / count badges on the right edge of the row. */
+.op-row__pill {
+  font: 600 11px/14px var(--font-ui);
   padding: 3px 8px;
   border-radius: 999px;
   letter-spacing: 0.02em;
   flex: 0 0 auto;
 }
-.op__pill--ok {
-  background: var(--green-100);
-  color: var(--green-700);
+.op-row__pill--ok   { background: var(--green-100); color: var(--green-700); }
+.op-row__pill--fail { background: var(--red-100);   color: var(--red-700); }
+.op-row__pill--warn { background: var(--yellow-100); color: var(--yellow-700); }
+
+.op-row__stat { font: 600 13px/16px var(--font-mono); flex: 0 0 auto; }
+.op-row__stat--add { color: var(--green-600); }
+.op-row__stat--del { color: var(--red-600); }
+
+.op-row__chevron { width: 12px; height: 12px; flex: 0 0 auto; }
+
+/* -------- Bottom sheet modal ----------
+   Built on top of <dialog> so we get free focus management + ESC to
+   close + native ::backdrop. Two height variants:
+     .sheet--half  → 50dvh
+     .sheet--max   → ~92dvh (leaves ~60px under the status bar) */
+
+dialog.sheet {
+  margin: 0 auto auto auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  position: fixed;
+  inset: 0;
+  display: block;
 }
-.op__pill--fail {
-  background: var(--red-100);
-  color: var(--red-700);
-}
-.op__pill--warn {
-  background: var(--yellow-100);
-  color: var(--yellow-700);
+dialog.sheet:not([open]) { display: none; }
+dialog.sheet::backdrop {
+  background: rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
-.op__stat {
-  font: 600 12px/14px var(--font-mono);
+.sheet__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border-radius: 20px 20px 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+  max-height: 100%;
+}
+.sheet--half .sheet__panel { height: 50dvh; }
+.sheet--max  .sheet__panel { height: 92dvh; }
+
+.sheet__handle {
+  width: 36px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--prey-300);
+  margin: 8px auto 4px;
   flex: 0 0 auto;
 }
-.op__stat--add { color: var(--green-600); }
-.op__stat--del { color: var(--red-600); }
 
-.op__chevron {
-  width: 14px;
-  height: 14px;
+.sheet__header {
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  align-items: center;
+  padding: 8px 16px 16px;
   flex: 0 0 auto;
-  transition: transform 0.2s ease;
 }
-.op[open] > summary .op__chevron { transform: rotate(90deg); }
-
-.op__body {
+.sheet__close {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sheet__close:active { background: var(--prey-100); }
+.sheet__title-block {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.sheet__title {
   margin: 0;
-  padding: 12px 14px;
-  border-top: 1px solid var(--divider);
-  font: 400 12px/18px var(--font-mono);
+  font: 700 17px/22px var(--font-ui);
+  color: var(--fg-default);
+}
+.sheet__subtitle {
+  margin: 0;
+  font: 400 13px/16px var(--font-ui);
   color: var(--fg-muted);
+}
+
+.sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 16px 24px;
+}
+
+.sheet__section-label {
+  margin: 12px 0 6px;
+  font: 600 13px/18px var(--font-ui);
+  color: var(--fg-subtle);
+  letter-spacing: 0.02em;
+}
+
+.sheet__code {
+  margin: 0;
+  padding: 12px;
+  font: 400 13px/20px var(--font-mono);
+  background: var(--prey-100);
+  border-radius: 10px;
+  color: var(--fg-default);
   overflow-x: auto;
   white-space: pre;
-  background: rgba(0, 0, 0, 0.02);
 }
 
-/* Code highlighting inside .op__body (kept minimal — bg-friendly). */
+.sheet__diff {
+  margin: 0;
+  padding: 0;
+  font: 400 14px/24px var(--font-mono);
+  background: var(--prey-100);
+  color: var(--fg-default);
+  overflow-x: auto;
+  white-space: pre;
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+.sheet__diff .ln {
+  color: var(--fg-subtle);
+  padding: 0 14px;
+  user-select: none;
+  text-align: right;
+}
+.sheet__diff .code { padding: 0 8px 0 0; }
+.sheet__diff .row-add .ln,
+.sheet__diff .row-add .code { background: var(--green-100); color: var(--green-900); }
+.sheet__diff .row-del .ln,
+.sheet__diff .row-del .code { background: var(--red-100); color: var(--red-900); text-decoration: line-through; }
+
+/* Code highlighting tokens shared by .sheet__code and inline op bodies. */
 .hl-prompt   { color: var(--green-700); }
 .hl-comment  { color: var(--fg-subtle); }
 .hl-string   { color: var(--orange-700); }

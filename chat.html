@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=13" />
+  <link rel="stylesheet" href="./styles.css?v=14" />
 </head>
 <body>
   <div class="app">
@@ -53,43 +53,23 @@
         <article class="msg msg--agent">
           <p class="msg__text">I'll look into the redirect issue. Let me start by checking the recent commits to the auth module and then trace the redirect logic.</p>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Command</span> <span class="op__title">git log --oneline -8 src/auth/</span></span>
-              <span class="op__pill op__pill--ok">trusted</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-prompt">$</span> git log --oneline -8 src/auth/
-<span class="hl-hash">a3f91c2</span> refactor: simplify auth middleware chain
-<span class="hl-hash">d1e7b04</span> feat: add OAuth2 PKCE support
-<span class="hl-hash">8c42af1</span> fix: token refresh race condition
-<span class="hl-hash">e5509a3</span> refactor: extract redirect logic to utils
-<span class="hl-hash">2bb1d67</span> chore: update auth dependencies
-<span class="hl-hash">f930c71</span> feat: add session timeout handling
-<span class="hl-hash">cc814e9</span> test: add auth flow integration tests
-<span class="hl-hash">71a0d52</span> docs: update auth README</pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
+            <span class="op-row__kind">Command</span>
+            <code class="op-row__title">git log --oneline -8 src/auth/</code>
+            <span class="op-row__pill op-row__pill--ok">trusted</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <blockquote class="msg__aside">Commit <code class="inline-code">e5509a3</code> extracted redirect logic to utils — that's likely where the return URL handling was dropped. Let me check that diff.</blockquote>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Command</span> <span class="op__title">git diff e5509a3~1..e5509a3 -- src/auth/</span></span>
-              <span class="op__pill op__pill--ok">trusted</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-comment">// src/auth/middleware.ts (before refactor)</span>
-<span class="hl-removed">- const returnUrl = req.query.returnUrl || req.session.returnUrl;</span>
-<span class="hl-removed">- res.redirect(returnUrl || '/dashboard');</span>
-<span class="hl-added">+ res.redirect(getPostLoginRedirect());</span>
-
-<span class="hl-comment">// src/auth/utils.ts (new)</span>
-<span class="hl-keyword">export function</span> getPostLoginRedirect() {
-  <span class="hl-keyword">return</span> <span class="hl-string">'/dashboard'</span>;  <span class="hl-comment">// ← returnUrl param was lost here</span>
-}</pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
+            <span class="op-row__kind">Command</span>
+            <code class="op-row__title">git diff e5509a3~1..e5509a3 -- src/auth/</code>
+            <span class="op-row__pill op-row__pill--ok">trusted</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <div class="msg__actions" role="toolbar" aria-label="Message actions">
             <button class="msg-action" aria-label="Copy"><img class="icon icon-subtle" src="./assets/icon-copy.svg" alt="" /></button>
@@ -100,42 +80,18 @@
           </div>
         </article>
 
-        <!-- AGENT: diagnosis + 2 edits -->
+        <!-- AGENT: diagnosis + edits -->
         <article class="msg msg--agent">
           <p class="msg__text">Found it. When the redirect logic was extracted to <code class="inline-code">getPostLoginRedirect()</code>, the <code class="inline-code">returnUrl</code> parameter from the query string and session was dropped. The function always returns <code class="inline-code">/dashboard</code>. Let me fix the utility and its call site.</p>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-edit.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Edited</span> <span class="op__title">src/auth/utils.ts</span></span>
-              <span class="op__stat op__stat--add">+8</span>
-              <span class="op__stat op__stat--del">−1</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-removed">- export function getPostLoginRedirect() {</span>
-<span class="hl-removed">-   return '/dashboard';</span>
-<span class="hl-removed">- }</span>
-<span class="hl-added">+ export function getPostLoginRedirect(req: Request): string {</span>
-<span class="hl-added">+   const returnUrl = req.query.returnUrl || req.session?.returnUrl;</span>
-<span class="hl-added">+   if (returnUrl && isAllowedRedirect(returnUrl)) {</span>
-<span class="hl-added">+     return returnUrl;</span>
-<span class="hl-added">+   }</span>
-<span class="hl-added">+   return '/dashboard';</span>
-<span class="hl-added">+ }</span></pre>
-          </details>
-
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-edit.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Edited</span> <span class="op__title">src/auth/middleware.ts</span></span>
-              <span class="op__stat op__stat--add">+1</span>
-              <span class="op__stat op__stat--del">−1</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-comment">// Post-authentication redirect</span>
-<span class="hl-removed">- res.redirect(getPostLoginRedirect());</span>
-<span class="hl-added">+ res.redirect(getPostLoginRedirect(req));</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-diff">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-file-code.svg" alt="" />
+            <span class="op-row__kind">2 edits to</span>
+            <span class="op-row__filepill"><span class="op-row__filepill__ext">TS</span> util.ts</span>
+            <span class="op-row__stat op-row__stat--add">+48</span>
+            <span class="op-row__stat op-row__stat--del">−12</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <div class="msg__actions" role="toolbar" aria-label="Message actions">
             <button class="msg-action" aria-label="Copy"><img class="icon icon-subtle" src="./assets/icon-copy.svg" alt="" /></button>
@@ -150,70 +106,32 @@
         <article class="msg msg--agent">
           <p class="msg__text">Now let me run the existing auth tests plus add a targeted test for this redirect case.</p>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Tool</span> <span class="op__title">test_runner · auth flow suite</span></span>
-              <span class="op__pill op__pill--fail">2 fail</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-prompt">$</span> npm test -- --grep "auth flow"
-
-<span class="hl-added">  ✓ redirects to /dashboard when no returnUrl (12ms)</span>
-<span class="hl-added">  ✓ preserves returnUrl from query string (8ms)</span>
-<span class="hl-added">  ✓ preserves returnUrl from session (6ms)</span>
-<span class="hl-removed">  ✗ rejects external redirect URLs (4ms)</span>
-<span class="hl-removed">  ✗ handles malformed returnUrl gracefully (3ms)</span>
-<span class="hl-added">  ✓ clears session returnUrl after redirect (9ms)</span>
-
-<span class="hl-comment">  4 passing, 2 failing</span>
-
-<span class="hl-comment">  AssertionError: expected redirect to '/dashboard'
-    for input 'https://evil.com/phish'
-    but got 'https://evil.com/phish'
-    at Context.&lt;anonymous&gt; (test/auth.spec.ts:94:18)</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
+            <span class="op-row__kind">Tool</span>
+            <code class="op-row__title">test_runner · auth flow suite</code>
+            <span class="op-row__pill op-row__pill--fail">2 fail</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <blockquote class="msg__aside">The <code class="inline-code">isAllowedRedirect</code> guard isn't rejecting external URLs. I need to check and fix the validation function.</blockquote>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-edit.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Edited</span> <span class="op__title">src/auth/security.ts</span></span>
-              <span class="op__stat op__stat--add">+8</span>
-              <span class="op__stat op__stat--del">−1</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-keyword">export function</span> isAllowedRedirect(url: <span class="hl-keyword">string</span>): <span class="hl-keyword">boolean</span> {
-<span class="hl-removed">-   return typeof url === 'string' &amp;&amp; url.length &gt; 0;</span>
-<span class="hl-added">+   if (typeof url !== 'string' || !url) return false;</span>
-<span class="hl-added">+   try {</span>
-<span class="hl-added">+     const parsed = new URL(url, 'http://localhost');</span>
-<span class="hl-added">+     return parsed.hostname === 'localhost' &amp;&amp; url.startsWith('/');</span>
-<span class="hl-added">+   } catch {</span>
-<span class="hl-added">+     return false;</span>
-<span class="hl-added">+   }</span>
-}</pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-diff">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-file-code.svg" alt="" />
+            <span class="op-row__kind">Edited</span>
+            <span class="op-row__filepill"><span class="op-row__filepill__ext">TS</span> util.ts</span>
+            <span class="op-row__stat op-row__stat--add">+8</span>
+            <span class="op-row__stat op-row__stat--del">−1</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Tool</span> <span class="op__title">test_runner · auth flow suite (rerun)</span></span>
-              <span class="op__pill op__pill--ok">6 pass</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-prompt">$</span> npm test -- --grep "auth flow"
-
-<span class="hl-added">  ✓ redirects to /dashboard when no returnUrl (11ms)</span>
-<span class="hl-added">  ✓ preserves returnUrl from query string (7ms)</span>
-<span class="hl-added">  ✓ preserves returnUrl from session (5ms)</span>
-<span class="hl-added">  ✓ rejects external redirect URLs (3ms)</span>
-<span class="hl-added">  ✓ handles malformed returnUrl gracefully (2ms)</span>
-<span class="hl-added">  ✓ clears session returnUrl after redirect (8ms)</span>
-
-<span class="hl-comment">  6 passing (36ms)</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
+            <span class="op-row__kind">Tool</span>
+            <code class="op-row__title">test_runner · auth flow suite (rerun)</code>
+            <span class="op-row__pill op-row__pill--ok">6 pass</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <div class="msg__actions" role="toolbar" aria-label="Message actions">
             <button class="msg-action" aria-label="Copy"><img class="icon icon-subtle" src="./assets/icon-copy.svg" alt="" /></button>
@@ -228,50 +146,32 @@
         <article class="msg msg--agent">
           <p class="msg__text">Tests are green. Let me also check if there are any other callers of the old function signature that need updating.</p>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-eye.svg" alt="" />
-              <span class="op__label"><span class="op__kind">grep</span> <span class="op__title">getPostLoginRedirect()</span></span>
-              <span class="op__pill op__pill--ok">3 hits</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-prompt">$</span> grep -rn "getPostLoginRedirect" src/
-
-<span class="hl-string">src/auth/utils.ts</span>:16: export function getPostLoginRedirect(
-<span class="hl-string">src/auth/middleware.ts</span>:48: res.redirect(getPostLoginRedirect(req));
-<span class="hl-string">src/auth/oauth-callback.ts</span>:31: res.redirect(getPostLoginRedirect());
-
-<span class="hl-comment">  3 results across 3 files</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-eye.svg" alt="" />
+            <span class="op-row__kind">grep</span>
+            <code class="op-row__title">getPostLoginRedirect()</code>
+            <span class="op-row__pill op-row__pill--ok">3 hits</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <blockquote class="msg__aside">There's another call site in <code class="inline-code">oauth-callback.ts</code> still using the old signature without <code class="inline-code">req</code>.</blockquote>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-edit.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Edited</span> <span class="op__title">src/auth/oauth-callback.ts</span></span>
-              <span class="op__stat op__stat--add">+1</span>
-              <span class="op__stat op__stat--del">−1</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-comment">// OAuth callback redirect</span>
-<span class="hl-removed">- res.redirect(getPostLoginRedirect());</span>
-<span class="hl-added">+ res.redirect(getPostLoginRedirect(req));</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-diff">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-file-code.svg" alt="" />
+            <span class="op-row__kind">Edited</span>
+            <span class="op-row__filepill"><span class="op-row__filepill__ext">TS</span> oauth-callback.ts</span>
+            <span class="op-row__stat op-row__stat--add">+1</span>
+            <span class="op-row__stat op-row__stat--del">−1</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Command</span> <span class="op__title">npm test</span></span>
-              <span class="op__pill op__pill--ok">47 pass</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-prompt">$</span> npm test
-
-<span class="hl-comment">  ...</span>
-<span class="hl-added">  47 passing (1.2s)</span>
-<span class="hl-added">  0 failing</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
+            <span class="op-row__kind">Command</span>
+            <code class="op-row__title">npm test</code>
+            <span class="op-row__pill op-row__pill--ok">47 pass</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
 
           <div class="msg__actions" role="toolbar" aria-label="Message actions">
             <button class="msg-action" aria-label="Copy"><img class="icon icon-subtle" src="./assets/icon-copy.svg" alt="" /></button>
@@ -310,19 +210,13 @@
 
         <!-- AGENT: commit -->
         <article class="msg msg--agent">
-          <details class="op">
-            <summary class="op__row">
-              <img class="op__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
-              <span class="op__label"><span class="op__kind">Command</span> <span class="op__title">git commit -m "fix: restore returnUrl redirect…"</span></span>
-              <span class="op__pill op__pill--ok">trusted</span>
-              <img class="op__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
-            </summary>
-            <pre class="op__body"><span class="hl-prompt">$</span> git add src/auth/utils.ts src/auth/security.ts src/auth/middleware.ts src/auth/oauth-callback.ts
-<span class="hl-prompt">$</span> git commit -m <span class="hl-string">"fix: restore returnUrl redirect + close open redirect vuln"</span>
-
-<span class="hl-comment">[main f48a1c3] fix: restore returnUrl redirect + close open redirect vuln
- 4 files changed, 19 insertions(+), 5 deletions(-)</span></pre>
-          </details>
+          <button class="op-row" data-sheet="sheet-cmd">
+            <img class="op-row__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
+            <span class="op-row__kind">Command</span>
+            <code class="op-row__title">git commit -m "fix: restore returnUrl redirect…"</code>
+            <span class="op-row__pill op-row__pill--ok">trusted</span>
+            <img class="op-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+          </button>
           <p class="msg__text">Committed as <code class="inline-code">f48a1c3</code>. The fix is on <code class="inline-code">main</code> — ready for deploy whenever you are.</p>
 
           <div class="msg__actions" role="toolbar" aria-label="Message actions">
@@ -351,6 +245,73 @@
 
   </div>
 
-  <script src="./app.js?v=13"></script>
+  <!-- ============== BOTTOM SHEETS ============== -->
+
+  <!-- HALF-HEIGHT SHEET: command / tool detail -->
+  <dialog id="sheet-cmd" class="sheet sheet--half" aria-labelledby="sheet-cmd-title">
+    <div class="sheet__panel">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <header class="sheet__header">
+        <button class="sheet__close" data-close aria-label="Close">
+          <img class="icon icon-light" src="./assets/icon-close.svg" alt="" />
+        </button>
+        <div class="sheet__title-block">
+          <h2 class="sheet__title" id="sheet-cmd-title">Command</h2>
+        </div>
+        <span aria-hidden="true"></span>
+      </header>
+      <div class="sheet__body">
+        <h3 class="sheet__section-label">Inputs</h3>
+        <pre class="sheet__code"><span class="hl-prompt">$</span> git log --oneline -8 src/auth/</pre>
+        <h3 class="sheet__section-label">Outputs</h3>
+<pre class="sheet__code">a3f91c2 refactor: simplify auth middleware chain
+d1e7b04 feat: add OAuth2 PKCE support
+8c42af1 fix: token refresh race condition
+e5509a3 refactor: extract redirect logic to utils
+2bb1d67 chore: update auth dependencies
+f930c71 feat: add session timeout handling
+cc814e9 test: add auth flow integration tests
+71a0d52 docs: update auth README</pre>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- MAX-HEIGHT SHEET: file diff -->
+  <dialog id="sheet-diff" class="sheet sheet--max" aria-labelledby="sheet-diff-title">
+    <div class="sheet__panel">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <header class="sheet__header">
+        <button class="sheet__close" data-close aria-label="Close">
+          <img class="icon icon-light" src="./assets/icon-close.svg" alt="" />
+        </button>
+        <div class="sheet__title-block">
+          <h2 class="sheet__title" id="sheet-diff-title">File Diff</h2>
+          <p class="sheet__subtitle">src/auth/utils.ts</p>
+        </div>
+        <span aria-hidden="true"></span>
+      </header>
+      <div class="sheet__body">
+        <div class="sheet__diff">
+          <span class="ln">14</span><span class="code"><span class="hl-keyword">import</span> { isAllowedRedirect } <span class="hl-keyword">from</span> <span class="hl-string">'./security'</span>;</span>
+          <span class="ln">15</span><span class="code"> </span>
+          <span class="ln row-del">16</span><span class="code row-del">export function getPostLoginRedirect() {</span>
+          <span class="ln row-del">17</span><span class="code row-del">  return '/dashboard';</span>
+          <span class="ln row-add">16</span><span class="code row-add">export function getPostLoginRedirect(</span>
+          <span class="ln row-add">17</span><span class="code row-add">  req: Request</span>
+          <span class="ln row-add">18</span><span class="code row-add">): string {</span>
+          <span class="ln row-add">19</span><span class="code row-add">  const returnUrl = req.query.returnUrl</span>
+          <span class="ln row-add">20</span><span class="code row-add">    || req.session?.returnUrl;</span>
+          <span class="ln row-add">21</span><span class="code row-add"> </span>
+          <span class="ln row-add">22</span><span class="code row-add">  if (returnUrl &amp;&amp; isAllowedRedirect(returnUrl)) {</span>
+          <span class="ln row-add">23</span><span class="code row-add">    return returnUrl;</span>
+          <span class="ln row-add">24</span><span class="code row-add">  }</span>
+          <span class="ln row-add">25</span><span class="code row-add">  return '/dashboard';</span>
+          <span class="ln row-add">26</span><span class="code row-add">}</span>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./app.js?v=14"></script>
 </body>
 </html>
