@@ -281,9 +281,7 @@ html, body { height: 100lvh; }
 /* ---------- Bottom bar (fixed) ----------
    Pinned to the very bottom of the viewport. Its inner content row
    sits above env(safe-area-inset-bottom), and the bar's translucent
-   background fills the home-indicator zone.
-   DEBUG: bright magenta background + ground-truth marker below it to
-   make it obvious where the bar actually sits vs. the screen edge. */
+   background fills the home-indicator zone. */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -295,36 +293,10 @@ html, body { height: 100lvh; }
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: stretch;
-  background: magenta; /* DEBUG */
-  border-top: 2px solid lime; /* DEBUG: top edge of bar */
-}
-
-/* DEBUG: a hairline pinned to literal viewport bottom. If you can see
-   any magenta below this yellow line, the bar IS at the viewport
-   bottom and the dark area below is the home-indicator safe-area. */
-.viewport-floor {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 2px;
-  background: yellow;
-  z-index: 11;
-  pointer-events: none;
-}
-
-/* DEBUG: prints the live env() values so we can read what iOS reports. */
-.env-readout {
-  position: fixed;
-  left: 8px;
-  bottom: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom) + 8px);
-  z-index: 12;
-  background: rgba(0, 0, 0, 0.7);
-  color: #0f0;
-  font: 500 11px/14px var(--font-mono);
-  padding: 4px 6px;
-  border-radius: 4px;
-  pointer-events: none;
+  background: var(--bg-chrome);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .tab {
