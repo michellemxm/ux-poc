@@ -202,22 +202,30 @@ img {
 .icon-muted { filter: brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%); }
 .icon-purple{ filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(3504%) hue-rotate(257deg) brightness(102%) contrast(102%); }
 
-/* ---------- App shell ---------- */
+/* ---------- App shell ----------
+   Use the full visual viewport. `100dvh` reflects the dynamic viewport
+   on iOS, and `position: fixed; inset: 0` covers the full screen in
+   PWA standalone mode (with viewport-fit=cover set on the meta tag). */
 .app {
   position: fixed;
   inset: 0;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  width: 100%;
+  height: 100dvh; /* fallback below */
   background: var(--bg-app);
+}
+@supports not (height: 100dvh) {
+  .app { height: 100vh; }
 }
 
 /* ---------- Top bar (fixed) ----------
-   - Sits behind the iOS status bar (black-translucent), so we add
-     env(safe-area-inset-top) of padding.
-   - Translucent + backdrop-filter so middle content can be seen scrolling behind it. */
+   - Pinned to the very top of the viewport with `position: fixed`.
+   - Includes env(safe-area-inset-top) of padding so its inner row
+     clears the iOS status bar (which overlays translucently). */
 .top-bar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
   height: calc(var(--top-bar-h) + env(safe-area-inset-top));
   padding: env(safe-area-inset-top) max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right));
@@ -252,27 +260,30 @@ img {
 .icon-btn:active { background: rgba(255,255,255,0.06); }
 
 /* ---------- Scrollable content ----------
-   The fixed bars are part of the grid (so they take their own row),
-   but we still let content scroll *behind* them visually by giving
-   the content extra top/bottom padding equal to bar height. */
+   Fills the entire app shell. The fixed bars overlay it, so we pad
+   the top and bottom by each bar's full height so the first/last bits
+   of content aren't hidden behind them. */
 .content {
-  grid-row: 2;
+  position: absolute;
+  inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  /* Pull content up under the translucent top bar */
-  margin-top: calc(-1 * (var(--top-bar-h) + env(safe-area-inset-top)));
-  margin-bottom: calc(-1 * (var(--bottom-bar-h) + env(safe-area-inset-bottom)));
   padding-top: calc(var(--top-bar-h) + env(safe-area-inset-top));
   padding-bottom: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom));
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
 
-/* ---------- Bottom bar (fixed) ---------- */
+/* ---------- Bottom bar (fixed) ----------
+   Pinned to the very bottom of the viewport. Its inner content row
+   sits above env(safe-area-inset-bottom), and the bar's translucent
+   background fills the home-indicator zone. */
 .bottom-bar {
-  position: sticky;
+  position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
   height: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom));
   padding: 0 max(8px, env(safe-area-inset-left)) env(safe-area-inset-bottom) max(8px, env(safe-area-inset-right));

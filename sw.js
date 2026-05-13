@@ -1,4 +1,4 @@
-const CACHE = "kiro-v1";
+const CACHE = "kiro-v2";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -39,6 +39,21 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
+
+  // Network-first for navigations (HTML) so layout/markup updates
+  // take effect on the next launch even when offline-cache exists.
+  if (req.mode === "navigate" || (req.destination === "" && req.headers.get("accept")?.includes("text/html"))) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match(req).then((c) => c || caches.match("./index.html")))
+    );
+    return;
+  }
+
+  // Stale-while-revalidate for everything else (CSS/JS/fonts/icons).
   event.respondWith(
     caches.match(req).then((cached) => {
       const network = fetch(req).then((res) => {
