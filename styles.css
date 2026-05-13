@@ -119,8 +119,11 @@
      Source-of-truth surface + foreground tokens. Component styles read
      through these so theming = swap variables. */
   --bg-app:        #FFFFFF;
-  --bg-chrome:     rgba(255, 255, 255, 0.85); /* translucent for scroll-behind */
-  --bg-surface:    var(--prey-100);            /* light gray inputs / cards */
+  /* `--chrome-rgb` is the RGB triplet behind the top/bottom translucent
+     chrome (consumed via rgba() so we can gradient-fade the alpha). */
+  --chrome-rgb:    242, 241, 244;              /* Prey/100 — translucent chrome base */
+  --bg-chrome:     rgba(var(--chrome-rgb), 0.85);
+  --bg-surface:    #FFFFFF;                    /* search field (light theme uses pure white) */
   --bg-inverse:    var(--kiro-plack);          /* always-dark elements (compose btn) */
   --fg-default:    var(--kiro-plack);
   --fg-muted:      var(--prey-500);
@@ -130,6 +133,9 @@
   --divider:       var(--prey-200);
   --pressed:       rgba(0, 0, 0, 0.04);
   --hairline:      rgba(0, 0, 0, 0.08);
+  /* Soft drop shadow used on raised surfaces (search bar, compose btn,
+     top-bar action buttons, brand mark). Dark theme uses `none`. */
+  --shadow-soft:   0 1px 16px rgba(0, 0, 0, 0.10);
 
   /* Icon tint filters. Source SVGs are white; filter to target color.
      --filter-icon-fg = "match foreground" (theme-aware). */
@@ -143,7 +149,8 @@
 
   /* ---------- Theme: DARK (commented — restore for dark mode) ----------
   --bg-app:        var(--kiro-black);
-  --bg-chrome:     rgba(10, 9, 11, 0.85);
+  --chrome-rgb:    10, 9, 11;
+  --bg-chrome:     rgba(var(--chrome-rgb), 0.85);
   --bg-surface:    var(--prey-800);
   --bg-inverse:    var(--prey-100);
   --fg-default:    var(--kiro-white);
@@ -154,6 +161,7 @@
   --divider:       var(--prey-700);
   --pressed:       rgba(255, 255, 255, 0.06);
   --hairline:      rgba(255, 255, 255, 0.06);
+  --shadow-soft:   none;
 
   --filter-icon-fg:        none;
   --filter-icon-muted:     brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%);
@@ -274,27 +282,48 @@ html, body { height: 100lvh; }
   right: 0;
   z-index: 10;
   height: calc(var(--top-bar-h) + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  padding: env(safe-area-inset-top) max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  background: var(--bg-chrome);
+  gap: 16px;
+  /* Gradient that fades the BOTTOM edge of the top bar into the
+     scrolling content beneath, with a uniform backdrop blur for the
+     glassy effect. (Figma uses a progressive blur; CSS approximates
+     with a single radius — the visual is close.) */
+  background: linear-gradient(
+    to top,
+    rgba(var(--chrome-rgb), 0) 0%,
+    rgba(var(--chrome-rgb), 0.85) 30%,
+    rgba(var(--chrome-rgb), 0.85) 100%
+  );
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--hairline);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-decoration: none;
   color: inherit;
-  height: 44px;
-  padding: 0 4px;
+  height: 40px;
 }
-.brand__ghost    { height: 28px; width: auto; }
+/* The ghost sits in a raised dark square. The Kiro Ghost SVG itself
+   has a Plack body + white eyes — placing it on a Plack tile makes
+   the body blend with the tile and only the eyes/mouth read, which
+   matches the lockup in Figma. */
+.brand__ghost-tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: var(--bg-inverse);
+  box-shadow: var(--shadow-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand__ghost    { height: 24px; width: auto; }
 .brand__wordmark {
   height: 18px;
   width: auto;
@@ -305,32 +334,45 @@ html, body { height: 100lvh; }
 .top-bar__actions {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 
+/* Default icon button — flat, used inside the search-field's pill. */
 .icon-btn {
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-}
-.icon-btn--sm { width: 32px; height: 32px; border-radius: 8px; }
-.icon-btn:active { background: var(--pressed); }
-
-.avatar-btn {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: var(--prey-200);
-  color: var(--fg-default);
-  font: 700 14px/1 var(--font-ui);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: 16px;
 }
-.avatar-btn:active { background: var(--prey-300); }
+.icon-btn--sm { width: 32px; height: 32px; }
+.icon-btn:active { background: var(--pressed); }
+
+/* Raised action button used in the top bar (inbox, etc.). 40x40 with
+   the same 20px radius + soft shadow as the search field. */
+.icon-btn--raised {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-soft);
+}
+.icon-btn--raised:active { background: var(--prey-100); }
+
+.avatar-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: var(--bg-surface);
+  color: var(--fg-default);
+  font: 700 15px/1 var(--font-ui);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+}
+.avatar-btn:active { background: var(--prey-100); }
 
 /* ---------- Scrollable content ----------
    Fills the entire app shell. The fixed bars overlay it, so we pad
@@ -351,7 +393,8 @@ html, body { height: 100lvh; }
 /* ---------- Bottom bar (fixed) ----------
    Search + compose row. Pinned to the very bottom of the viewport so
    the input stays in reach. Its inner row sits above the home
-   indicator; the translucent background fills the safe-area zone. */
+   indicator; the gradient fade fills the safe-area zone and softly
+   meets the scrolling content above. */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -361,13 +404,17 @@ html, body { height: 100lvh; }
   height: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom));
   padding:
     10px
-    max(16px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-right))
     calc(10px + env(safe-area-inset-bottom))
-    max(16px, env(safe-area-inset-left));
-  background: var(--bg-chrome);
+    max(20px, env(safe-area-inset-left));
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--chrome-rgb), 0) 0%,
+    rgba(var(--chrome-rgb), 0.85) 20%,
+    rgba(var(--chrome-rgb), 0.85) 100%
+  );
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-top: 1px solid var(--hairline);
 }
 
 .search-row {
@@ -383,9 +430,10 @@ html, body { height: 100lvh; }
   align-items: center;
   gap: 4px;
   height: 48px;
-  padding: 0 6px;
+  padding: 0 8px;
   background: var(--bg-surface);
-  border-radius: 14px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
 }
 
 .search-input {
@@ -404,31 +452,36 @@ html, body { height: 100lvh; }
 .compose-btn {
   width: 48px;
   height: 48px;
-  border-radius: 14px;
+  border-radius: 20px;
   background: var(--bg-inverse);
   color: var(--fg-on-inverse);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
+  box-shadow: var(--shadow-soft);
 }
 .compose-btn:active { opacity: 0.85; }
 
-/* ---------- Menu screen ---------- */
+/* ---------- Menu screen ----------
+   List items use `border-bottom` (not top) so the divider sits below
+   each item — that keeps the section-header bare and avoids a stray
+   line under it. The border is on the item box itself (full row width)
+   so it goes edge-to-edge from screen left to screen right. */
 .menu {
   display: flex;
   flex-direction: column;
   padding: 8px 0 24px;
 }
 
-/* Feature pill list */
+/* Feature pill list (no horizontal padding on the list itself so the
+   item borders span edge-to-edge). */
 .feature-list {
   list-style: none;
   margin: 0;
-  padding: 8px 16px 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 .feature-item {
   display: flex;
@@ -436,8 +489,8 @@ html, body { height: 100lvh; }
   gap: 12px;
   width: 100%;
   min-height: 46px;
-  padding: 0 8px;
-  border-radius: 10px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--divider);
   color: var(--fg-default);
 }
 .feature-item:active { background: var(--pressed); }
@@ -445,7 +498,8 @@ html, body { height: 100lvh; }
   font: 400 17px/22px var(--font-ui);
 }
 
-/* Section header */
+/* Section header — no border, no rule below it. The first item in the
+   list provides its own bottom rule. */
 .section {
   display: flex;
   flex-direction: column;
@@ -454,7 +508,7 @@ html, body { height: 100lvh; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px 8px;
+  padding: 16px 24px 8px;
 }
 .section-header__title {
   margin: 0;
@@ -479,8 +533,8 @@ html, body { height: 100lvh; }
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 10px 24px;
-  border-top: 1px solid var(--divider);
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--divider);
   cursor: pointer;
 }
 .item:active { background: var(--pressed); }
