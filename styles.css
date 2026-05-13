@@ -118,12 +118,13 @@
   /* ---------- Theme: LIGHT (active) ----------
      Source-of-truth surface + foreground tokens. Component styles read
      through these so theming = swap variables. */
-  --bg-app:        #FFFFFF;
+  --bg-app:        #F2F1F4;                    /* Prey/100 — page background */
   /* `--chrome-rgb` is the RGB triplet behind the top/bottom translucent
-     chrome (consumed via rgba() so we can gradient-fade the alpha). */
-  --chrome-rgb:    242, 241, 244;              /* Prey/100 — translucent chrome base */
+     chrome (consumed via rgba() so we can gradient-fade the alpha).
+     Matches --bg-app so the gradient fades into the page seamlessly. */
+  --chrome-rgb:    242, 241, 244;              /* Prey/100 */
   --bg-chrome:     rgba(var(--chrome-rgb), 0.85);
-  --bg-surface:    #FFFFFF;                    /* search field (light theme uses pure white) */
+  --bg-surface:    #FFFFFF;                    /* raised surfaces (search field, action pill) */
   --bg-inverse:    var(--kiro-plack);          /* always-dark elements (compose btn) */
   --fg-default:    var(--kiro-plack);
   --fg-muted:      var(--prey-500);
@@ -134,8 +135,11 @@
   --pressed:       rgba(0, 0, 0, 0.04);
   --hairline:      rgba(0, 0, 0, 0.08);
   /* Soft drop shadow used on raised surfaces (search bar, compose btn,
-     top-bar action buttons, brand mark). Dark theme uses `none`. */
+     top-bar action pill). Dark theme uses `none`. */
   --shadow-soft:   0 1px 16px rgba(0, 0, 0, 0.10);
+  /* Drop-shadow filter for "floating" SVG icons (e.g. brand ghost).
+     Applied via filter:, not box-shadow, so it follows the silhouette. */
+  --shadow-icon:   drop-shadow(0 1px 16px rgba(0, 0, 0, 0.10));
 
   /* Icon tint filters. Source SVGs are white; filter to target color.
      --filter-icon-fg = "match foreground" (theme-aware). */
@@ -162,6 +166,7 @@
   --pressed:       rgba(255, 255, 255, 0.06);
   --hairline:      rgba(255, 255, 255, 0.06);
   --shadow-soft:   none;
+  --shadow-icon:   none;
 
   --filter-icon-fg:        none;
   --filter-icon-muted:     brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%);
@@ -288,17 +293,15 @@ html, body { height: 100lvh; }
   justify-content: space-between;
   gap: 16px;
   /* Gradient that fades the BOTTOM edge of the top bar into the
-     scrolling content beneath, with a uniform backdrop blur for the
-     glassy effect. (Figma uses a progressive blur; CSS approximates
-     with a single radius — the visual is close.) */
+     scrolling content beneath. No backdrop-filter: a blur on top of a
+     translucent gradient produces a soupy double-treatment that the
+     design intentionally avoids. */
   background: linear-gradient(
     to top,
     rgba(var(--chrome-rgb), 0) 0%,
     rgba(var(--chrome-rgb), 0.85) 30%,
     rgba(var(--chrome-rgb), 0.85) 100%
   );
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 .brand {
@@ -307,23 +310,15 @@ html, body { height: 100lvh; }
   gap: 10px;
   text-decoration: none;
   color: inherit;
-  height: 40px;
+  height: 48px;
 }
-/* The ghost sits in a raised dark square. The Kiro Ghost SVG itself
-   has a Plack body + white eyes — placing it on a Plack tile makes
-   the body blend with the tile and only the eyes/mouth read, which
-   matches the lockup in Figma. */
-.brand__ghost-tile {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background: var(--bg-inverse);
-  box-shadow: var(--shadow-soft);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.brand__ghost {
+  height: 32px;
+  width: auto;
+  /* Floating ghost — drop-shadow follows the silhouette. Token swaps
+     to `none` in dark theme via --shadow-icon. */
+  filter: var(--shadow-icon);
 }
-.brand__ghost    { height: 24px; width: auto; }
 .brand__wordmark {
   height: 18px;
   width: auto;
@@ -331,13 +326,23 @@ html, body { height: 100lvh; }
   filter: var(--filter-wordmark);
 }
 
+/* Top-bar action pill — one container that holds two independent tap
+   targets (inbox + avatar). The pill itself carries the bg + shadow;
+   the children are flat. Matches Figma `header > overflow` (84x48,
+   20-radius, white, drop-shadow 0/1/16 rgba(0,0,0,0.10)). */
 .top-bar__actions {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  height: 48px;
+  padding: 0 8px 0 16px;
+  background: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Default icon button — flat, used inside the search-field's pill. */
+/* Default icon button — flat, used both inside the search field and
+   inside the top-bar action pill. */
 .icon-btn {
   width: 32px;
   height: 32px;
@@ -345,34 +350,32 @@ html, body { height: 100lvh; }
   align-items: center;
   justify-content: center;
   border-radius: 16px;
+  background: transparent;
 }
 .icon-btn--sm { width: 32px; height: 32px; }
 .icon-btn:active { background: var(--pressed); }
 
-/* Raised action button used in the top bar (inbox, etc.). 40x40 with
-   the same 20px radius + soft shadow as the search field. */
-.icon-btn--raised {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background: var(--bg-surface);
-  box-shadow: var(--shadow-soft);
+/* Inbox sits inside the action pill — no own bg, smaller hit box. */
+.top-bar__actions .icon-btn {
+  width: 24px;
+  height: 32px;
+  border-radius: 8px;
 }
-.icon-btn--raised:active { background: var(--prey-100); }
 
+/* Avatar circle inside the action pill: 32x32, Prey/200 bg, dark "M". */
 .avatar-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background: var(--bg-surface);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--prey-200);
   color: var(--fg-default);
-  font: 700 15px/1 var(--font-ui);
+  font: 700 13px/1 var(--font-ui);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-soft);
+  flex: 0 0 auto;
 }
-.avatar-btn:active { background: var(--prey-100); }
+.avatar-btn:active { background: var(--prey-300); }
 
 /* ---------- Scrollable content ----------
    Fills the entire app shell. The fixed bars overlay it, so we pad
@@ -413,8 +416,7 @@ html, body { height: 100lvh; }
     rgba(var(--chrome-rgb), 0.85) 20%,
     rgba(var(--chrome-rgb), 0.85) 100%
   );
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  /* No backdrop-filter — see top-bar note. */
 }
 
 .search-row {
@@ -464,18 +466,37 @@ html, body { height: 100lvh; }
 .compose-btn:active { opacity: 0.85; }
 
 /* ---------- Menu screen ----------
-   List items use `border-bottom` (not top) so the divider sits below
-   each item — that keeps the section-header bare and avoids a stray
-   line under it. The border is on the item box itself (full row width)
-   so it goes edge-to-edge from screen left to screen right. */
+   List rows stay edge-to-edge so tap area + :active highlight cover
+   the full row. The divider line is drawn by a ::after pseudo-element
+   inset 24px on each side, so it aligns with the content (which has
+   24px horizontal padding) instead of running from screen edge to
+   screen edge. */
 .menu {
   display: flex;
   flex-direction: column;
   padding: 8px 0 24px;
 }
 
-/* Feature pill list (no horizontal padding on the list itself so the
-   item borders span edge-to-edge). */
+/* Shared divider for both list types. The `--row-inset` knob lets a
+   parent override the inset if a screen needs a different alignment. */
+.feature-item,
+.item {
+  --row-inset: 24px;
+  position: relative;
+}
+.feature-item::after,
+.item::after {
+  content: "";
+  position: absolute;
+  left:  var(--row-inset);
+  right: var(--row-inset);
+  bottom: 0;
+  height: 1px;
+  background: var(--divider);
+  pointer-events: none;
+}
+
+/* Feature pills */
 .feature-list {
   list-style: none;
   margin: 0;
@@ -490,7 +511,6 @@ html, body { height: 100lvh; }
   width: 100%;
   min-height: 46px;
   padding: 12px 24px;
-  border-bottom: 1px solid var(--divider);
   color: var(--fg-default);
 }
 .feature-item:active { background: var(--pressed); }
@@ -498,8 +518,7 @@ html, body { height: 100lvh; }
   font: 400 17px/22px var(--font-ui);
 }
 
-/* Section header — no border, no rule below it. The first item in the
-   list provides its own bottom rule. */
+/* Section header — no rule below it. */
 .section {
   display: flex;
   flex-direction: column;
@@ -534,7 +553,6 @@ html, body { height: 100lvh; }
   flex-direction: column;
   gap: 2px;
   padding: 8px 24px;
-  border-bottom: 1px solid var(--divider);
   cursor: pointer;
 }
 .item:active { background: var(--pressed); }

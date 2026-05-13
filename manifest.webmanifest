@@ -6,8 +6,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF",
+  "background_color": "#F2F1F4",
+  "theme_color": "#F2F1F4",
   "icons": [
     {
       "src": "assets/kiro-app.png",

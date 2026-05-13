@@ -105,14 +105,25 @@ Rules:
   .top-bar    { height: calc(var(--top-bar-h)    + env(safe-area-inset-top));    padding-top:    env(safe-area-inset-top); }
   .bottom-bar { height: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); }
   ```
-- Bars use `backdrop-filter: saturate(180%) blur(20px)` plus a **linear-gradient** that fades alpha to 0 at the edge meeting the scroll content (bottom of top bar, top of bottom bar). The gradient's RGB base is `var(--chrome-rgb)` so theme swaps just change the triplet. Figma uses a "progressive blur"; CSS approximates with a uniform `blur()` — visual is close enough.
+- Bars use a **linear-gradient** that fades alpha to 0 at the edge meeting the scroll content (bottom of top bar, top of bottom bar). The gradient's RGB base is `var(--chrome-rgb)` so theme swaps just change the triplet. **No `backdrop-filter`** — a blur over a translucent gradient produces a soupy double-treatment the design avoids.
 
 ```css
 .top-bar    { background: linear-gradient(to top,    rgba(var(--chrome-rgb), 0) 0%, rgba(var(--chrome-rgb), 0.85) 30%, rgba(var(--chrome-rgb), 0.85) 100%); }
 .bottom-bar { background: linear-gradient(to bottom, rgba(var(--chrome-rgb), 0) 0%, rgba(var(--chrome-rgb), 0.85) 20%, rgba(var(--chrome-rgb), 0.85) 100%); }
 ```
 
-- "Raised" surfaces (search field, compose button, top-bar action buttons, brand tile) all share **20px radius + `var(--shadow-soft)`** in the light theme. The dark theme sets `--shadow-soft: none` — shadows on dark surfaces look muddy, so they're suppressed.
+- "Raised" surfaces (search field, compose button, top-bar action pill) all share **20px radius + `var(--shadow-soft)`** in the light theme. The dark theme sets `--shadow-soft: none` — shadows on dark surfaces look muddy, so they're suppressed.
+- "Floating" icons that aren't inside a container (the brand ghost) get their shadow via `filter: var(--shadow-icon)` instead of `box-shadow`, so the shadow follows the silhouette.
+- **List dividers are inset, not edge-to-edge.** They're drawn by a `::after` pseudo-element on each row positioned `left: var(--row-inset); right: var(--row-inset)` (default `24px`). The row itself stays full-width so tap targets and `:active` highlights cover the whole row. Use this pattern for any new list:
+  ```css
+  .row { position: relative; padding: 12px 24px; }
+  .row::after {
+    content: "";
+    position: absolute; left: 24px; right: 24px; bottom: 0;
+    height: 1px; background: var(--divider);
+  }
+  ```
+- **Multi-target action containers** (e.g. the top-bar's inbox + avatar pill) put the bg + shadow on the *container*, leaving the children flat. The container has `display: inline-flex; gap: …` and each child remains an independently tappable button. Don't give the children their own bg or shadow.
 
 ### Sizes
 
@@ -140,9 +151,9 @@ These are what components read. Never hard-code `rgba(255,255,255,...)` or simil
 
 | Token | Light theme | Used for |
 |---|---|---|
-| `--bg-app` | `#FFFFFF` | page background |
-| `--bg-chrome` | `rgba(255,255,255,0.85)` | translucent top/bottom bars |
-| `--bg-surface` | `Prey/100` | inputs, cards |
+| `--bg-app` | `#F2F1F4` (Prey/100) | page background |
+| `--bg-chrome` | `rgba(242,241,244,0.85)` | translucent top/bottom bars |
+| `--bg-surface` | `#FFFFFF` | raised surfaces (search field, action pill) |
 | `--bg-inverse` | `Plack` | elements that stay dark in either theme (e.g. compose button) |
 | `--fg-default` | `Plack` | titles, body text |
 | `--fg-muted` | `Prey/500` | secondary text |
@@ -153,7 +164,8 @@ These are what components read. Never hard-code `rgba(255,255,255,...)` or simil
 | `--hairline` | `rgba(0,0,0,0.08)` | thin lines (rarely used in light theme) |
 | `--pressed` | `rgba(0,0,0,0.04)` | `:active` state |
 | `--chrome-rgb` | `242, 241, 244` (Prey/100) | RGB triplet used inside the top/bottom bar gradients via `rgba(var(--chrome-rgb), α)` |
-| `--shadow-soft` | `0 1px 16px rgba(0,0,0,0.10)` | raised surfaces (search field, compose, top-bar buttons, brand tile). Dark theme overrides to `none`. |
+| `--shadow-soft` | `0 1px 16px rgba(0,0,0,0.10)` | raised surface `box-shadow` (search field, compose btn, top-bar action pill). Dark theme overrides to `none`. |
+| `--shadow-icon` | `drop-shadow(0 1px 16px rgba(0,0,0,0.10))` | filter-based shadow for floating SVG icons (brand ghost). Dark theme overrides to `none`. |
 
 ### Typography classes
 

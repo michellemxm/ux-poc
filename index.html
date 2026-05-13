@@ -6,7 +6,7 @@
   <title>Kiro</title>
 
   <link rel="manifest" href="./manifest.webmanifest" />
-  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="theme-color" content="#F2F1F4" />
 
   <!-- iOS PWA. `default` = dark status-bar glyphs on a light page; the
        page still extends behind the status bar via viewport-fit=cover. -->
@@ -17,20 +17,18 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=8" />
+  <link rel="stylesheet" href="./styles.css?v=9" />
 </head>
 <body>
   <div class="app">
 
     <header class="top-bar">
       <a class="brand" href="#" aria-label="Kiro">
-        <span class="brand__ghost-tile">
-          <img class="brand__ghost" src="./assets/logo-kiro-ghost.svg" alt="" />
-        </span>
+        <img class="brand__ghost" src="./assets/logo-kiro-ghost.svg" alt="" />
         <img class="brand__wordmark" src="./assets/logo-kiro-text.svg" alt="Kiro" />
       </a>
       <div class="top-bar__actions">
-        <button class="icon-btn icon-btn--raised" aria-label="Inbox">
+        <button class="icon-btn" aria-label="Inbox">
           <img class="icon icon-light" src="./assets/icon-inbox.svg" alt="" />
         </button>
         <button class="avatar-btn" aria-label="Account">M</button>
@@ -155,6 +153,6 @@
 
   </div>
 
-  <script src="./app.js?v=8"></script>
+  <script src="./app.js?v=9"></script>
 </body>
 </html>
