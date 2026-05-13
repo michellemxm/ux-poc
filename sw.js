@@ -1,4 +1,4 @@
-const CACHE = "kiro-v5";
+const CACHE = "kiro-v6";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -8,14 +8,13 @@ const PRECACHE = [
   "./assets/kiro-app.png",
   "./assets/logo-kiro-ghost.svg",
   "./assets/logo-kiro-text.svg",
-  "./assets/icon-home.svg",
-  "./assets/icon-chat.svg",
-  "./assets/icon-search.svg",
   "./assets/icon-inbox.svg",
-  "./assets/icon-account.svg",
-  "./assets/icon-menu.svg",
-  "./assets/icon-add.svg",
-  "./assets/icon-kiro.svg",
+  "./assets/icon-image.svg",
+  "./assets/icon-lightbulb-empty.svg",
+  "./assets/icon-symbol-misc.svg",
+  "./assets/icon-search.svg",
+  "./assets/icon-sort-precedence.svg",
+  "./assets/icon-edit.svg",
   "./fonts/AWSDiatypeRounded-Regular.otf",
   "./fonts/AWSDiatypeRounded-Medium.otf",
   "./fonts/AWSDiatypeRounded-Heavy.otf",

@@ -124,8 +124,8 @@
   --divider:    var(--prey-700);
 
   /* Fixed-bar heights (excluding safe-area) */
-  --top-bar-h:    52px;
-  --bottom-bar-h: 64px;
+  --top-bar-h:    56px;
+  --bottom-bar-h: 68px;
 
   /* Font stacks */
   --font-ui:     "AWS Diatype Rounded", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
@@ -231,25 +231,39 @@ html, body { height: 100lvh; }
   right: 0;
   z-index: 10;
   height: calc(var(--top-bar-h) + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right));
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   background: var(--bg-chrome);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.top-bar__title {
-  display: flex;
-  justify-content: center;
+.brand {
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  height: 44px;
+  padding: 0 4px;
+}
+.brand__ghost    { height: 28px; width: auto; }
+.brand__wordmark {
+  height: 18px;
+  width: auto;
+  /* The wordmark SVG is filled with Plack (#141217); invert to white
+     on our dark theme. */
+  filter: invert(1) brightness(2);
 }
 
-.logo-mark {
-  height: 22px;
-  width: auto;
+.top-bar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .icon-btn {
@@ -260,7 +274,21 @@ html, body { height: 100lvh; }
   justify-content: center;
   border-radius: 10px;
 }
+.icon-btn--sm { width: 32px; height: 32px; border-radius: 8px; }
 .icon-btn:active { background: rgba(255,255,255,0.06); }
+
+.avatar-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--prey-700);
+  color: var(--kiro-white);
+  font: 700 14px/1 var(--font-ui);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-btn:active { background: var(--prey-600); }
 
 /* ---------- Scrollable content ----------
    Fills the entire app shell. The fixed bars overlay it, so we pad
@@ -279,9 +307,9 @@ html, body { height: 100lvh; }
 }
 
 /* ---------- Bottom bar (fixed) ----------
-   Pinned to the very bottom of the viewport. Its inner content row
-   sits above env(safe-area-inset-bottom), and the bar's translucent
-   background fills the home-indicator zone. */
+   Search + compose row. Pinned to the very bottom of the viewport so
+   the input stays in reach. Its inner row sits above the home
+   indicator; the translucent background fills the safe-area zone. */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -289,52 +317,144 @@ html, body { height: 100lvh; }
   right: 0;
   z-index: 10;
   height: calc(var(--bottom-bar-h) + env(safe-area-inset-bottom));
-  padding: 0 max(8px, env(safe-area-inset-left)) env(safe-area-inset-bottom) max(8px, env(safe-area-inset-right));
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  align-items: stretch;
+  padding:
+    10px
+    max(16px, env(safe-area-inset-right))
+    calc(10px + env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
   background: var(--bg-chrome);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.tab {
+.search-row {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+}
+
+.search-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+  padding: 0 6px;
+  background: var(--prey-800);
+  border-radius: 14px;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--fg-default);
+  font: 400 17px/22px var(--font-ui);
+  padding: 0 4px;
+}
+.search-input::placeholder { color: var(--prey-400); }
+
+.compose-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--prey-800);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  height: var(--bottom-bar-h);
+  flex: 0 0 auto;
+}
+.compose-btn:active { background: var(--prey-700); }
+
+/* ---------- Menu screen ---------- */
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0 24px;
+}
+
+/* Feature pill list */
+.feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 8px;
+  border-radius: 10px;
+  color: var(--fg-default);
+}
+.feature-item:active { background: rgba(255,255,255,0.04); }
+.feature-item__label {
+  font: 400 17px/22px var(--font-ui);
+}
+
+/* Section header */
+.section {
+  display: flex;
+  flex-direction: column;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px 8px;
+}
+.section-header__title {
+  margin: 0;
+  font: 400 13px/20px var(--font-ui);
   color: var(--prey-400);
+  letter-spacing: 0.02em;
 }
-.tab__label {
-  font: 400 11px/11px var(--font-ui);
-  letter-spacing: 0.01em;
+.section-header__action {
+  font: 400 13px/20px var(--font-ui);
+  color: var(--purple-300);
+  text-decoration: none;
 }
-.tab--active           { color: var(--kiro-white); }
-.tab--active .icon     { filter: none; }
-.tab--active .tab__label { color: var(--kiro-white); }
+.section-header__action:active { color: var(--purple-200); }
 
-/* ---------- Placeholder content styling ---------- */
-.placeholder {
-  padding: 20px 20px 24px;
+/* Item list */
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.item {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 2px;
+  padding: 10px 24px;
+  border-top: 1px solid var(--prey-800);
+  cursor: pointer;
 }
-
-.card {
-  background: var(--bg-surface);
-  border-radius: 14px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.item:active { background: rgba(255,255,255,0.03); }
+.item__title {
+  margin: 0;
+  font: 400 17px/22px var(--font-ui);
+  color: var(--fg-default);
+  /* Truncate to a single line like the Figma mock */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-
-.filler {
-  height: 220px;
-  border-radius: 14px;
-  background: var(--prey-900);
+.item__meta {
+  margin: 0;
+  font: 400 13px/16px var(--font-ui);
+  color: var(--prey-400);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
