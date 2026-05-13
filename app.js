@@ -24,10 +24,14 @@ function renderEnvReadout() {
 
   const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   const vv = window.visualViewport;
+  const docEl = document.documentElement;
   el.textContent =
     `safe-area t:${top} r:${right} b:${bottom} l:${left}\n` +
-    `innerH:${window.innerHeight} dvh ok:${CSS.supports("height", "100dvh")}\n` +
-    `vv h:${vv ? Math.round(vv.height) : "n/a"} scale:${vv ? vv.scale.toFixed(2) : "n/a"}\n` +
+    `innerH:${window.innerHeight}  outerH:${window.outerHeight}\n` +
+    `screen h:${window.screen.height}  avail h:${window.screen.availHeight}\n` +
+    `docEl clientH:${docEl.clientHeight}  scrollH:${docEl.scrollHeight}\n` +
+    `vv h:${vv ? Math.round(vv.height) : "n/a"} offsetY:${vv ? Math.round(vv.offsetTop) : "n/a"} scale:${vv ? vv.scale.toFixed(2) : "n/a"}\n` +
+    `lvh ok:${CSS.supports("height", "100lvh")}  dvh ok:${CSS.supports("height", "100dvh")}\n` +
     `standalone:${standalone} dpr:${window.devicePixelRatio}`;
   el.style.whiteSpace = "pre";
 }
