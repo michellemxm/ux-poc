@@ -573,3 +573,286 @@ html, body { height: 100lvh; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* =============================================================
+   Chat screen (chat.html)
+   ============================================================= */
+
+/* Top-bar variant: back arrow + stacked model selector + actions */
+.top-bar--chat {
+  /* Same fixed positioning + safe-area handling as .top-bar.
+     Only the inner layout differs. */
+  gap: 8px;
+  padding-left:  max(8px, env(safe-area-inset-left));
+  padding-right: max(8px, env(safe-area-inset-right));
+}
+
+/* Standalone icon button (no shared pill container). */
+.icon-btn--lone {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+/* Center title: model name + caret + meta on a second line. */
+.chat-title {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  justify-content: center;
+  column-gap: 4px;
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+  background: transparent;
+  color: var(--fg-default);
+  text-align: center;
+}
+.chat-title__name {
+  grid-column: 1;
+  grid-row: 1;
+  font: 700 15px/20px var(--font-ui);
+  color: var(--fg-default);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-title__caret {
+  grid-column: 2;
+  grid-row: 1;
+  width: 12px;
+  height: 12px;
+}
+.chat-title__meta {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  font: 400 11px/14px var(--font-ui);
+  color: var(--fg-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Chat top-bar actions: two flat icon buttons side-by-side, no shared
+   pill (matches the chat-screen mock). */
+.top-bar__actions--chat {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  height: auto;
+  border-radius: 0;
+}
+.top-bar__actions--chat .icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+/* -------- Conversation -------- */
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 8px 20px 24px;
+}
+
+.msg { display: flex; flex-direction: column; gap: 10px; }
+
+.msg__text {
+  margin: 0;
+  font: 400 17px/24px var(--font-ui);
+  color: var(--fg-default);
+}
+.msg__text + .msg__text { margin-top: 6px; }
+
+.msg__list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font: 400 17px/24px var(--font-ui);
+}
+
+/* User message: right-aligned light-purple bubble. */
+.msg--user {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 12px 16px;
+  background: var(--purple-100);
+  border-radius: 20px;
+  border-top-right-radius: 6px;  /* "tail" suggestion toward sender side */
+}
+.msg--user .msg__text { color: var(--purple-900); }
+.msg--user .inline-code {
+  background: rgba(85, 43, 153, 0.10);
+  color: var(--purple-900);
+}
+
+/* Agent message: full-row text, no bubble. */
+.msg--agent { align-self: stretch; }
+
+/* Inline code (kept neutral on agent text, theme-color on user bubble) */
+.inline-code {
+  font: 400 14px/1.4 var(--font-mono);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+/* "Thinking" / secondary aside under an agent message. */
+.msg__aside {
+  margin: 0;
+  padding: 4px 0 4px 14px;
+  border-left: 2px solid var(--divider);
+  color: var(--fg-muted);
+  font: italic 400 15px/22px var(--font-ui);
+}
+.msg__aside .inline-code { font-style: normal; }
+
+/* Action row under each agent message (copy / share / 👍 / 👎 / retry). */
+.msg__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+.msg-action {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+.msg-action:active { background: var(--pressed); }
+
+/* -------- Agent operation card (collapsible) -------- */
+
+.op {
+  background: var(--bg-surface);
+  border: 1px solid var(--divider);
+  border-radius: 14px;
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+}
+/* Hide the default disclosure triangle */
+.op > summary { list-style: none; }
+.op > summary::-webkit-details-marker { display: none; }
+
+.op__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  min-height: 44px;
+}
+.op__row:active { background: var(--pressed); }
+
+.op__icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.op__label {
+  flex: 1;
+  min-width: 0;
+  font: 400 14px/18px var(--font-ui);
+  color: var(--fg-default);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.op__kind {
+  font-weight: 600;
+  color: var(--fg-default);
+}
+.op__title {
+  font: 400 13px/18px var(--font-mono);
+  color: var(--fg-muted);
+}
+
+/* Status / count badges on the right edge of the op row. */
+.op__pill {
+  font: 600 11px/14px var(--font-mono);
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+  flex: 0 0 auto;
+}
+.op__pill--ok {
+  background: var(--green-100);
+  color: var(--green-700);
+}
+.op__pill--fail {
+  background: var(--red-100);
+  color: var(--red-700);
+}
+.op__pill--warn {
+  background: var(--yellow-100);
+  color: var(--yellow-700);
+}
+
+.op__stat {
+  font: 600 12px/14px var(--font-mono);
+  flex: 0 0 auto;
+}
+.op__stat--add { color: var(--green-600); }
+.op__stat--del { color: var(--red-600); }
+
+.op__chevron {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease;
+}
+.op[open] > summary .op__chevron { transform: rotate(90deg); }
+
+.op__body {
+  margin: 0;
+  padding: 12px 14px;
+  border-top: 1px solid var(--divider);
+  font: 400 12px/18px var(--font-mono);
+  color: var(--fg-muted);
+  overflow-x: auto;
+  white-space: pre;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Code highlighting inside .op__body (kept minimal — bg-friendly). */
+.hl-prompt   { color: var(--green-700); }
+.hl-comment  { color: var(--fg-subtle); }
+.hl-string   { color: var(--orange-700); }
+.hl-keyword  { color: var(--purple-700); }
+.hl-hash     { color: var(--blue-700); }
+.hl-added    { color: var(--green-700); display: block; background: var(--green-100); margin: 0 -14px; padding: 0 14px; }
+.hl-removed  { color: var(--red-700);   display: block; background: var(--red-100);   margin: 0 -14px; padding: 0 14px; text-decoration: line-through; }
+
+/* -------- Bottom bar variant for chat -------- */
+
+.bottom-bar--chat .search-field {
+  padding-right: 4px;
+}
+.bottom-bar--chat .icon-btn--sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+/* Item link wrapper — turns a whole .item into a tappable navigation
+   target without changing its visual layout. */
+.item__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}

@@ -22,8 +22,9 @@ A **single-page iOS PWA** prototyping the Kiro mobile app.
 
 ```
 ux-poc/
-├── index.html              # the whole app (single page)
-├── styles.css              # design tokens + components
+├── index.html              # menu screen (home)
+├── chat.html               # chat / conversation screen
+├── styles.css              # all design tokens + components for both screens
 ├── app.js                  # SW registration + light interactivity
 ├── sw.js                   # service worker (cache-versioned)
 ├── manifest.webmanifest    # PWA manifest
@@ -38,7 +39,24 @@ ux-poc/
     └── asset-naming-convention.md
 ```
 
-When adding a screen: edit `index.html` and `styles.css`. Don't introduce a bundler, framework, or routing library unless the task explicitly calls for it.
+### Multi-page navigation
+
+This is a multi-page PWA — each top-level screen is its own `.html` file. Navigate between them with plain anchor links (`<a href="./chat.html">`). No router, no client-side history hacks. Reasons:
+
+- iOS PWAs treat each `.html` as a real navigation; back/forward works.
+- The service worker precaches every screen on install, so navigation is offline-friendly.
+- Reload (Cmd-R / pull-down) gives you the screen you're on, not the start_url.
+
+When adding a screen:
+
+1. Create `<name>.html` at the project root.
+2. Reuse the same `<head>` block from `index.html` (meta tags, manifest, theme-color, apple-touch-icon, stylesheet, viewport).
+3. Reuse the `.app > .top-bar > .content > .bottom-bar` shell structure. Customize the content of each region for the screen; **don't** duplicate the shell sizing/positioning rules — those live in `styles.css` and apply globally.
+4. Add the new page path to `sw.js` `PRECACHE`.
+5. Bump `CACHE` to the next `kiro-vN`.
+6. Bump the `?v=N` query string on `styles.css` and `app.js` in every HTML file.
+
+Don't introduce a bundler, framework, or routing library unless the task explicitly calls for it.
 
 ---
 

@@ -1,13 +1,15 @@
-const CACHE = "kiro-v10";
+const CACHE = "kiro-v11";
 const PRECACHE = [
   "./",
   "./index.html",
+  "./chat.html",
   "./styles.css",
   "./app.js",
   "./manifest.webmanifest",
   "./assets/kiro-app.png",
   "./assets/logo-kiro-ghost.svg",
   "./assets/logo-kiro-text.svg",
+  // menu screen icons
   "./assets/icon-inbox.svg",
   "./assets/icon-image.svg",
   "./assets/icon-lightbulb-empty.svg",
@@ -15,6 +17,21 @@ const PRECACHE = [
   "./assets/icon-search.svg",
   "./assets/icon-sort-precedence.svg",
   "./assets/icon-edit.svg",
+  // chat screen icons
+  "./assets/icon-arrow-left.svg",
+  "./assets/icon-chevron-down.svg",
+  "./assets/icon-chevron-right.svg",
+  "./assets/icon-kebab-vertical.svg",
+  "./assets/icon-mic.svg",
+  "./assets/icon-terminal.svg",
+  "./assets/icon-play.svg",
+  "./assets/icon-eye.svg",
+  "./assets/icon-copy.svg",
+  "./assets/icon-share.svg",
+  "./assets/icon-thumbsup.svg",
+  "./assets/icon-thumbsdown.svg",
+  "./assets/icon-refresh.svg",
+  // fonts
   "./fonts/AWSDiatypeRounded-Regular.otf",
   "./fonts/AWSDiatypeRounded-Medium.otf",
   "./fonts/AWSDiatypeRounded-Heavy.otf",
