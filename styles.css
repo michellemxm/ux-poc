@@ -599,17 +599,21 @@ html, body { height: 100lvh; }
 }
 .icon-btn--pill:active { background: var(--prey-100); }
 
-/* Small circular inset button used inside a parent pill / chat input.
-   Matches Figma's `chat-action-button` and the M-avatar treatment:
-   32x32, fully round, Prey/200 background. */
-.icon-btn--inset-circle {
+/* Small inset button used inside a parent pill / chat input.
+   32x32, Prey/200 background. Two shapes:
+     --inset-circle  = fully round (M avatar on menu, mic in chat input)
+     --inset-rounded = squircle with 10px radius (new-chat on chat top bar) */
+.icon-btn--inset-circle,
+.icon-btn--inset-rounded {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
   background: var(--prey-200);
   flex: 0 0 auto;
 }
-.icon-btn--inset-circle:active { background: var(--prey-300); }
+.icon-btn--inset-circle  { border-radius: 50%; }
+.icon-btn--inset-rounded { border-radius: 10px; }
+.icon-btn--inset-circle:active,
+.icon-btn--inset-rounded:active { background: var(--prey-300); }
 
 /* Title block — left-aligned model selector + meta line. */
 .chat-title {
