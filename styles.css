@@ -638,7 +638,8 @@ html, body { height: 100lvh; }
 }
 .chat-title__selector:active { opacity: 0.6; }
 .chat-title__name {
-  font: 700 17px/22px var(--font-ui);
+  /* H4 from steering/design-system-font-ramp.md */
+  font: 700 15px/20px var(--font-ui);
   color: var(--fg-default);
   white-space: nowrap;
   overflow: hidden;
@@ -761,7 +762,8 @@ html, body { height: 100lvh; }
 }
 
 .op-row__kind {
-  font: 700 15px/22px var(--font-ui);
+  /* Secondary from steering/design-system-font-ramp.md */
+  font: 400 15px/20px var(--font-ui);
   color: var(--fg-default);
   flex: 0 0 auto;
 }
@@ -821,18 +823,28 @@ html, body { height: 100lvh; }
      .sheet--half  → 50dvh
      .sheet--max   → ~92dvh (leaves ~60px under the status bar) */
 
+/* The <dialog> element needs to fill the visual viewport explicitly,
+   because the UA stylesheet sets `width: fit-content; height: fit-content`
+   on it. Without overriding both, the dialog box collapses to its
+   intrinsic size and the .sheet__panel — which is `position: absolute;
+   bottom: 0` relative to the dialog — ends up bottom-aligned inside a
+   tiny zero-height box, leaving you with just the backdrop visible. */
 dialog.sheet {
-  margin: 0 auto auto auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
-  width: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  position: fixed;
-  inset: 0;
-  display: block;
+  overflow: visible;
 }
 dialog.sheet:not([open]) { display: none; }
 dialog.sheet::backdrop {
