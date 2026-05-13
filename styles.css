@@ -233,7 +233,7 @@ img {
 .h1       { font: 400 28px/34px var(--font-ui); margin: 0; }
 .h2       { font: 700 22px/28px var(--font-ui); margin: 0; }
 .h3       { font: 700 20px/25px var(--font-ui); margin: 0; }
-.h4       { font: 700 15px/20px var(--font-ui); margin: 0; }
+.h4       { font: 600 15px/20px var(--font-ui); margin: 0; }
 .primary  { font: 400 17px/22px var(--font-ui); margin: 0; }
 .secondary{ font: 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
 .comment  { font: italic 400 15px/20px var(--font-ui); margin: 0; color: var(--fg-muted); }
@@ -369,7 +369,7 @@ html, body { height: 100lvh; }
   border-radius: 50%;
   background: var(--prey-200);
   color: var(--fg-default);
-  font: 700 13px/1 var(--font-ui);
+  font: 600 15px/20px var(--font-ui);          /* H4 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -446,7 +446,7 @@ html, body { height: 100lvh; }
   border: 0;
   outline: none;
   color: var(--fg-default);
-  font: 400 17px/22px var(--font-ui);
+  font: 400 17px/22px var(--font-ui);          /* Primary */
   padding: 0 4px;
 }
 .search-input::placeholder { color: var(--fg-subtle); }
@@ -515,7 +515,7 @@ html, body { height: 100lvh; }
 }
 .feature-item:active { background: var(--pressed); }
 .feature-item__label {
-  font: 400 17px/22px var(--font-ui);
+  font: 400 17px/22px var(--font-ui);          /* Primary */
 }
 
 /* Section header — no rule below it. */
@@ -531,12 +531,12 @@ html, body { height: 100lvh; }
 }
 .section-header__title {
   margin: 0;
-  font: 400 13px/20px var(--font-ui);
+  font: 400 12px/16px var(--font-ui);          /* Caption */
   color: var(--fg-subtle);
   letter-spacing: 0.02em;
 }
 .section-header__action {
-  font: 400 13px/20px var(--font-ui);
+  font: 400 12px/16px var(--font-ui);          /* Caption */
   color: var(--fg-accent);
   text-decoration: none;
 }
@@ -558,7 +558,7 @@ html, body { height: 100lvh; }
 .item:active { background: var(--pressed); }
 .item__title {
   margin: 0;
-  font: 400 17px/22px var(--font-ui);
+  font: 400 17px/22px var(--font-ui);          /* Primary */
   color: var(--fg-default);
   /* Truncate to a single line like the Figma mock */
   overflow: hidden;
@@ -567,7 +567,7 @@ html, body { height: 100lvh; }
 }
 .item__meta {
   margin: 0;
-  font: 400 13px/16px var(--font-ui);
+  font: 400 12px/16px var(--font-ui);          /* Caption */
   color: var(--fg-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -638,8 +638,7 @@ html, body { height: 100lvh; }
 }
 .chat-title__selector:active { opacity: 0.6; }
 .chat-title__name {
-  /* H4 from steering/design-system-font-ramp.md */
-  font: 700 15px/20px var(--font-ui);
+  font: 600 15px/20px var(--font-ui);          /* H4 */
   color: var(--fg-default);
   white-space: nowrap;
   overflow: hidden;
@@ -647,7 +646,7 @@ html, body { height: 100lvh; }
 }
 .chat-title__caret { width: 12px; height: 12px; flex: 0 0 auto; }
 .chat-title__meta {
-  font: 400 11px/14px var(--font-ui);
+  font: 400 11px/11px var(--font-ui);          /* Micro */
   color: var(--fg-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -667,7 +666,7 @@ html, body { height: 100lvh; }
 
 .msg__text {
   margin: 0;
-  font: 400 17px/24px var(--font-ui);
+  font: 400 17px/22px var(--font-ui);          /* Primary */
   color: var(--fg-default);
 }
 .msg__text + .msg__text { margin-top: 6px; }
@@ -678,7 +677,7 @@ html, body { height: 100lvh; }
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font: 400 17px/24px var(--font-ui);
+  font: 400 17px/22px var(--font-ui);          /* Primary */
 }
 
 /* User message: right-aligned light-purple bubble. */
@@ -701,7 +700,7 @@ html, body { height: 100lvh; }
 
 /* Inline code (kept neutral on agent text, theme-color on user bubble) */
 .inline-code {
-  font: 400 14px/1.4 var(--font-mono);
+  font: 400 14px/18px var(--font-mono);         /* Code */
   background: rgba(0, 0, 0, 0.05);
   border-radius: 5px;
   padding: 1px 5px;
@@ -713,7 +712,7 @@ html, body { height: 100lvh; }
   padding: 4px 0 4px 14px;
   border-left: 2px solid var(--divider);
   color: var(--fg-muted);
-  font: italic 400 15px/22px var(--font-ui);
+  font: italic 400 15px/20px var(--font-ui);   /* Comment */
 }
 .msg__aside .inline-code { font-style: normal; }
 
@@ -762,15 +761,14 @@ html, body { height: 100lvh; }
 }
 
 .op-row__kind {
-  /* Secondary from steering/design-system-font-ramp.md */
-  font: 400 15px/20px var(--font-ui);
+  font: 400 15px/20px var(--font-ui);          /* Secondary */
   color: var(--fg-default);
   flex: 0 0 auto;
 }
 .op-row__title {
   flex: 1;
   min-width: 0;
-  font: 400 13px/18px var(--font-mono);
+  font: 400 14px/18px var(--font-mono);         /* Code */
   color: var(--fg-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -785,14 +783,14 @@ html, body { height: 100lvh; }
   padding: 1px 6px;
   background: var(--prey-200);
   border-radius: 5px;
-  font: 600 12px/16px var(--font-mono);
+  font: 400 12px/20px var(--font-mono);         /* Code-sm */
   color: var(--fg-default);
   flex: 0 0 auto;
 }
 .op-row__filepill__ext {
   background: var(--prey-300);
   color: var(--fg-default);
-  font: 700 10px/14px var(--font-mono);
+  font: 400 11px/11px var(--font-ui);          /* Micro */
   padding: 0 4px;
   border-radius: 3px;
   letter-spacing: 0.02em;
@@ -801,7 +799,7 @@ html, body { height: 100lvh; }
 
 /* Status / count badges on the right edge of the row. */
 .op-row__pill {
-  font: 600 11px/14px var(--font-ui);
+  font: 400 11px/11px var(--font-ui);          /* Micro */
   padding: 3px 8px;
   border-radius: 999px;
   letter-spacing: 0.02em;
@@ -811,7 +809,7 @@ html, body { height: 100lvh; }
 .op-row__pill--fail { background: var(--red-100);   color: var(--red-700); }
 .op-row__pill--warn { background: var(--yellow-100); color: var(--yellow-700); }
 
-.op-row__stat { font: 600 13px/16px var(--font-mono); flex: 0 0 auto; }
+.op-row__stat { font: 400 12px/20px var(--font-mono); flex: 0 0 auto; }  /* Code-sm */
 .op-row__stat--add { color: var(--green-600); }
 .op-row__stat--del { color: var(--red-600); }
 
@@ -906,12 +904,12 @@ dialog.sheet::backdrop {
 }
 .sheet__title {
   margin: 0;
-  font: 700 17px/22px var(--font-ui);
+  font: 600 15px/20px var(--font-ui);          /* H4 */
   color: var(--fg-default);
 }
 .sheet__subtitle {
   margin: 0;
-  font: 400 13px/16px var(--font-ui);
+  font: 400 12px/16px var(--font-ui);          /* Caption */
   color: var(--fg-muted);
 }
 
@@ -924,7 +922,7 @@ dialog.sheet::backdrop {
 
 .sheet__section-label {
   margin: 12px 0 6px;
-  font: 600 13px/18px var(--font-ui);
+  font: 400 12px/16px var(--font-ui);          /* Caption */
   color: var(--fg-subtle);
   letter-spacing: 0.02em;
 }
@@ -932,7 +930,7 @@ dialog.sheet::backdrop {
 .sheet__code {
   margin: 0;
   padding: 12px;
-  font: 400 13px/20px var(--font-mono);
+  font: 400 12px/20px var(--font-mono);         /* Code-sm */
   background: var(--prey-100);
   border-radius: 10px;
   color: var(--fg-default);
@@ -943,7 +941,7 @@ dialog.sheet::backdrop {
 .sheet__diff {
   margin: 0;
   padding: 0;
-  font: 400 14px/24px var(--font-mono);
+  font: 400 14px/18px var(--font-mono);         /* Code */
   background: var(--prey-100);
   color: var(--fg-default);
   overflow-x: auto;
@@ -997,7 +995,7 @@ dialog.sheet::backdrop {
   border: 0;
   outline: none;
   color: var(--fg-default);
-  font: 400 17px/22px var(--font-ui);
+  font: 400 17px/22px var(--font-ui);          /* Primary */
   padding: 0 4px;
 }
 .chat-input__field::placeholder { color: var(--fg-subtle); }

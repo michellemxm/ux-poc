@@ -187,7 +187,31 @@ These are what components read. Never hard-code `rgba(255,255,255,...)` or simil
 
 ### Typography classes
 
-Use the typography ramp classes (`.h1`, `.h2`, `.primary`, `.secondary`, `.caption`, `.code`, …) defined in `styles.css`. Don't author one-off `font-size`/`line-height` per component unless the design system doesn't cover the case.
+Use the typography ramp classes (`.h1`, `.h2`, `.h3`, `.h4`, `.primary`, `.secondary`, `.comment`, `.caption`, `.micro`, `.code`, `.code-sm`) defined at the top of `styles.css`. **No one-off `font-size`/`line-height` per component** — even when you write a `font:` shorthand inside a component rule, the *values* must match a ramp exactly, and the ramp name belongs in a trailing comment:
+
+```css
+.section-header__title {
+  font: 400 12px/16px var(--font-ui);    /* Caption */
+}
+```
+
+The full ramp (light theme):
+
+| Ramp | `font:` value |
+|---|---|
+| `.h1` | `400 28px/34px var(--font-ui)` |
+| `.h2` | `700 22px/28px var(--font-ui)` |
+| `.h3` | `700 20px/25px var(--font-ui)` |
+| `.h4` | `600 15px/20px var(--font-ui)` |
+| `.primary` | `400 17px/22px var(--font-ui)` |
+| `.secondary` | `400 15px/20px var(--font-ui)` |
+| `.comment` | `italic 400 15px/20px var(--font-ui)` |
+| `.caption` | `400 12px/16px var(--font-ui)` |
+| `.micro` | `400 11px/11px var(--font-ui)` |
+| `.code` | `400 14px/18px var(--font-mono)` |
+| `.code-sm` | `400 12px/20px var(--font-mono)` |
+
+When the design feels like it needs a value outside the ramp, **pick the closest ramp and use its values exactly**. Don't synthesize new values. If a real new ramp is needed, define it once in the ramp section and add it to this table.
 
 Font stack:
 - UI: `"AWS Diatype Rounded"` (loaded from `fonts/`)
