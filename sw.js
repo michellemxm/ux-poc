@@ -1,4 +1,4 @@
-const CACHE = "kiro-v2";
+const CACHE = "kiro-v3";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -29,11 +29,17 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
+    await self.clients.claim();
+    // Force every controlled client to reload so the new shell renders
+    // on a single relaunch instead of waiting for a second.
+    const clients = await self.clients.matchAll({ type: "window" });
+    for (const c of clients) {
+      try { c.navigate(c.url); } catch (_) {}
+    }
+  })());
 });
 
 self.addEventListener("fetch", (event) => {
