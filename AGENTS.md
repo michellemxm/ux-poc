@@ -377,8 +377,12 @@ Use `INSTANCE.componentId` lookups against the `components` map in the response 
 
 ## 13. Git workflow
 
-- The user's preference is **direct commits to `main`**. No feature branches, no PRs, unless explicitly asked.
-- Use conventional, imperative commit subjects under ~70 chars. Body explains **why**, not what.
+**Do not auto-commit, push, or merge.** The user controls when changes land on `main`. Make edits and stage files freely, but wait for an explicit instruction (e.g. "commit this", "push to main") before running `git commit` or `git push`.
+
+When the user does ask for a commit:
+
+- Run `git status` / `git diff` first to confirm what's actually staged.
+- Use conventional, imperative commit subjects under ~70 chars. The body explains **why**, not what.
 - Co-author trailer:
   ```
   Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
@@ -389,7 +393,7 @@ Use `INSTANCE.componentId` lookups against the `components` map in the response 
 
 ## 14. When you're done with a change
 
-Before reporting "done":
+The user reviews and commits — you just leave the working tree in a shippable state. Before reporting "done":
 
 - [ ] Bumped `sw.js` `CACHE` version if any shipped file changed.
 - [ ] Bumped `?v=N` query string in `index.html` for `styles.css` / `app.js`.
@@ -408,5 +412,5 @@ Before reporting "done":
 - Don't introduce client-side routing.
 - Don't bake colors into SVGs — tint via CSS filter.
 - Don't reach for scale tokens (`--prey-700`) inside a component when a semantic token (`--fg-muted`) exists.
-- Don't push to `main` with placeholder content unless that's what was requested.
+- Don't auto-commit, push, or merge — the user decides when changes land on `main`.
 - Don't restart the local server without confirming with the user — they may already have one running and your restart will steal the port.
