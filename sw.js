@@ -1,4 +1,4 @@
-const CACHE = "kiro-v21";
+const CACHE = "kiro-v22";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -34,6 +34,16 @@ const PRECACHE = [
   "./assets/icon-refresh.svg",
   "./assets/icon-file-code.svg",
   "./assets/icon-close.svg",
+  // profile sheet icons
+  "./assets/icon-account.svg",
+  "./assets/icon-credit-card.svg",
+  "./assets/icon-graph-line.svg",
+  "./assets/icon-brush.svg",
+  "./assets/icon-globe.svg",
+  "./assets/icon-bell.svg",
+  "./assets/icon-question.svg",
+  "./assets/icon-sign-out.svg",
+  "./assets/icon-check.svg",
   // fonts
   "./fonts/AWSDiatypeRounded-Regular.otf",
   "./fonts/AWSDiatypeRounded-Medium.otf",

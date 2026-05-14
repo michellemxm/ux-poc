@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=21" />
+  <link rel="stylesheet" href="./styles.css?v=22" />
 </head>
 <body>
   <div class="app">
@@ -31,7 +31,7 @@
         <button class="icon-btn" aria-label="Inbox">
           <img class="icon icon-light" src="./assets/icon-inbox.svg" alt="" />
         </button>
-        <button class="avatar-btn" aria-label="Account">M</button>
+        <button class="avatar-btn" data-sheet="sheet-profile" aria-label="Account">M</button>
       </div>
     </header>
 
@@ -155,6 +155,121 @@
 
   </div>
 
-  <script src="./app.js?v=21"></script>
+  <!-- ============== PROFILE SHEET ============== -->
+  <!-- One max-height bottom sheet whose body holds an in-place panel
+       stack. Each list row inside the root panel can push a sub-panel
+       (settings detail) into view; the back arrow pops back. The X
+       close button only appears on the root panel. -->
+  <dialog id="sheet-profile" class="sheet sheet--max" aria-labelledby="sheet-profile-title">
+    <div class="sheet__panel">
+      <div class="sheet__handle" aria-hidden="true"></div>
+
+      <!-- ROOT VIEW: profile / settings list -->
+      <section class="sheet__view sheet__view--active" data-view="root">
+        <header class="sheet__header">
+          <button class="sheet__close" data-close aria-label="Close">
+            <img class="icon icon-light" src="./assets/icon-close.svg" alt="" />
+          </button>
+          <div class="sheet__title-block">
+            <h2 class="sheet__title" id="sheet-profile-title">my-email@gmail.com</h2>
+            <p class="sheet__subtitle">Signed in with Github</p>
+          </div>
+          <span aria-hidden="true"></span>
+        </header>
+        <div class="sheet__body sheet__body--flush">
+          <ul class="settings-list">
+            <li class="settings-list__group">
+              <button class="setting-row">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-account.svg" alt="" />
+                <span class="setting-row__label">Profile</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+              <button class="setting-row">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-credit-card.svg" alt="" />
+                <span class="setting-row__label">Billing</span>
+                <span class="setting-row__value">Pro</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+              <button class="setting-row">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-graph-line.svg" alt="" />
+                <span class="setting-row__label">Usage</span>
+                <span class="setting-row__value">43%</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+            </li>
+            <li class="settings-list__group">
+              <button class="setting-row" data-nav="theme">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-brush.svg" alt="" />
+                <span class="setting-row__label">Theme</span>
+                <span class="setting-row__value" data-theme-current>System</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+              <button class="setting-row">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-globe.svg" alt="" />
+                <span class="setting-row__label">Language</span>
+                <span class="setting-row__value">English</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+              <button class="setting-row">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-bell.svg" alt="" />
+                <span class="setting-row__label">Notifications</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+            </li>
+            <li class="settings-list__group">
+              <button class="setting-row">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-question.svg" alt="" />
+                <span class="setting-row__label">Help &amp; Feedback</span>
+                <img class="setting-row__chevron icon icon-subtle" src="./assets/icon-chevron-right.svg" alt="" />
+              </button>
+            </li>
+            <li class="settings-list__group">
+              <button class="setting-row setting-row--terminal">
+                <img class="setting-row__icon icon icon-muted" src="./assets/icon-sign-out.svg" alt="" />
+                <span class="setting-row__label">Log out</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- THEME VIEW -->
+      <section class="sheet__view" data-view="theme" hidden>
+        <header class="sheet__header">
+          <button class="sheet__close" data-back aria-label="Back">
+            <img class="icon icon-light" src="./assets/icon-arrow-left.svg" alt="" />
+          </button>
+          <div class="sheet__title-block">
+            <h2 class="sheet__title">Theme</h2>
+          </div>
+          <span aria-hidden="true"></span>
+        </header>
+        <div class="sheet__body sheet__body--flush">
+          <ul class="option-list" role="radiogroup" aria-label="Theme">
+            <li>
+              <button class="option-row option-row--selected" data-theme="system" role="radio" aria-checked="true">
+                <span class="option-row__label">System</span>
+                <img class="option-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+              </button>
+            </li>
+            <li>
+              <button class="option-row" data-theme="dark" role="radio" aria-checked="false">
+                <span class="option-row__label">Dark</span>
+                <img class="option-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+              </button>
+            </li>
+            <li>
+              <button class="option-row" data-theme="light" role="radio" aria-checked="false">
+                <span class="option-row__label">Light</span>
+                <img class="option-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+              </button>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <script src="./app.js?v=22"></script>
 </body>
 </html>

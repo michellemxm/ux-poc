@@ -957,6 +957,106 @@ dialog.sheet::backdrop {
   -webkit-overflow-scrolling: touch;
   padding: 0 16px 24px;
 }
+/* List-style bodies use 0 horizontal padding so rows can render edge-
+   to-edge and own their own inset. */
+.sheet__body--flush { padding-left: 0; padding-right: 0; }
+
+/* ---------- Sheet view stack ----------
+   A single sheet can contain multiple views (root settings + drill-in
+   sub-panels). All sit as siblings inside .sheet__panel; only one is
+   visible at a time. The active view fills the remaining space below
+   the drag handle. Toggle via the `hidden` attribute (preferred) or
+   .sheet__view--active (legacy). */
+.sheet__view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.sheet__view[hidden] { display: none; }
+
+/* ---------- Settings list (profile sheet) ---------- */
+.settings-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.settings-list__group {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--divider);
+}
+.settings-list__group:last-child { border-bottom: 0; }
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 24px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.setting-row:active { background: var(--pressed); }
+
+.setting-row__icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+.setting-row__label {
+  flex: 1;
+  font: var(--type-primary);                /* Primary */
+  color: var(--fg-default);
+}
+.setting-row__value {
+  font: var(--type-secondary);              /* Secondary */
+  color: var(--fg-muted);
+  flex: 0 0 auto;
+}
+.setting-row__chevron {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+/* Rows like "Log out" don't drill into anything. */
+.setting-row--terminal { color: var(--fg-default); }
+
+/* ---------- Option list (radio rows, e.g. theme) ---------- */
+.option-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 24px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.option-row:active { background: var(--pressed); }
+.option-row__label {
+  flex: 1;
+  font: var(--type-primary);                /* Primary */
+  color: var(--fg-default);
+}
+.option-row__check {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  visibility: hidden;
+}
+.option-row--selected .option-row__check { visibility: visible; }
 
 .sheet__section-label {
   margin: 12px 0 6px;
