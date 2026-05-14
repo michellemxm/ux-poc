@@ -859,12 +859,12 @@ html, body { height: 100lvh; }
      .sheet--half  → 50dvh
      .sheet--max   → ~92dvh (leaves ~60px under the status bar) */
 
-/* The <dialog> element needs to fill the visual viewport explicitly,
-   because the UA stylesheet sets `width: fit-content; height: fit-content`
-   on it. Without overriding both, the dialog box collapses to its
-   intrinsic size and the .sheet__panel — which is `position: absolute;
-   bottom: 0` relative to the dialog — ends up bottom-aligned inside a
-   tiny zero-height box, leaving you with just the backdrop visible. */
+/* The <dialog> element needs to fill the visual viewport explicitly —
+   UA stylesheet sets width/height to fit-content, which collapses the
+   box and leaves the bottom-anchored panel invisible.
+   Open/close animation uses `@starting-style` + `transition-behavior:
+   allow-discrete` (Safari 17.4+) so the dialog fades + the panel
+   slides up ~10% on open, and reverses on close. */
 dialog.sheet {
   position: fixed;
   top: 0;
@@ -881,12 +881,31 @@ dialog.sheet {
   background: transparent;
   color: inherit;
   overflow: visible;
+  opacity: 0;
+  transition:
+    opacity 0.24s ease,
+    display 0.24s allow-discrete,
+    overlay 0.24s allow-discrete;
 }
-dialog.sheet:not([open]) { display: none; }
+dialog.sheet[open] { opacity: 1; }
+@starting-style {
+  dialog.sheet[open] { opacity: 0; }
+}
+
 dialog.sheet::backdrop {
-  background: rgba(0, 0, 0, 0.40);
+  background-color: rgba(0, 0, 0, 0);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+  transition:
+    background-color 0.24s ease,
+    display 0.24s allow-discrete,
+    overlay 0.24s allow-discrete;
+}
+dialog.sheet[open]::backdrop {
+  background-color: rgba(0, 0, 0, 0.40);
+}
+@starting-style {
+  dialog.sheet[open]::backdrop { background-color: rgba(0, 0, 0, 0); }
 }
 
 .sheet__panel {
@@ -901,6 +920,12 @@ dialog.sheet::backdrop {
   padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
   max-height: 100%;
+  transform: translateY(10%);
+  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+dialog.sheet[open] .sheet__panel { transform: translateY(0); }
+@starting-style {
+  dialog.sheet[open] .sheet__panel { transform: translateY(10%); }
 }
 .sheet--half .sheet__panel { height: 50dvh; }
 .sheet--max  .sheet__panel { height: 92dvh; }
@@ -921,9 +946,11 @@ dialog.sheet::backdrop {
   padding: 8px 16px 16px;
   flex: 0 0 auto;
 }
+/* 48×48 with 20px radius — same shape as the top-bar `.icon-btn--pill`
+   on the menu screen, NOT a circle (which would need radius = 24). */
 .sheet__close {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 20px;
   background: var(--bg-surface);
   box-shadow: var(--shadow-soft);
@@ -981,11 +1008,23 @@ dialog.sheet::backdrop {
   margin: 0;
   padding: 0;
 }
+/* Groups stack edge-to-edge for the tap target / :active highlight,
+   but the divider between them is inset 20px on each side to match
+   the panel's content padding. */
 .settings-list__group {
+  position: relative;
   padding: 4px 0;
-  border-bottom: 1px solid var(--divider);
 }
-.settings-list__group:last-child { border-bottom: 0; }
+.settings-list__group:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 0;
+  height: 1px;
+  background: var(--divider);
+  pointer-events: none;
+}
 
 .setting-row {
   display: flex;
@@ -993,7 +1032,7 @@ dialog.sheet::backdrop {
   gap: 16px;
   width: 100%;
   min-height: 48px;
-  padding: 8px 24px;
+  padding: 8px 20px;
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -1017,9 +1056,12 @@ dialog.sheet::backdrop {
   color: var(--fg-muted);
   flex: 0 0 auto;
 }
+/* Chevron container 20×20 (the SVG glyph itself is ~6×11 within the
+   16×16 viewBox, so the larger container brings the visible chevron
+   up to the ~16px the design calls for). */
 .setting-row__chevron {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   flex: 0 0 auto;
 }
 /* Rows like "Log out" don't drill into anything. */
