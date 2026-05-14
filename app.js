@@ -7,35 +7,73 @@ if ("serviceWorker" in navigator) {
 }
 
 /* =====================================================================
-   Cross-document view transitions (menu ↔ chat)
-   --------------------------------------------------------------------- */
-/* `@view-transition { navigation: auto }` in styles.css opts in to the
- * cross-document View Transitions API (Safari 18+). The browser snaps
- * the outgoing page, then crossfades into the new one — we override
- * with a horizontal slide whose direction depends on whether the
- * navigation is going deeper (`forward`) or popping back (`back`).
- *
- * Page hierarchy: index.html is depth 0; chat.html is depth 1. The
- * direction is whichever is deeper minus shallower. */
+   Page-to-page slide (menu ↔ chat)
+   ---------------------------------------------------------------------
+   Manual implementation because Safari's cross-document View Transitions
+   API is unreliable inside PWA standalone mode on iOS 18.0/18.1. We do
+   the slide ourselves:
+     1. Intercept clicks on internal .html links and the browser's
+        navigation is delayed by ~280ms while .app translates out.
+     2. The destination URL is loaded with a sessionStorage marker.
+     3. On load, the destination page starts in the off-screen
+        "entering" state and animates back to rest in the next frame.
+   Page hierarchy: index.html = depth 0, chat.html = depth 1. */
 const PAGE_DEPTH = { "": 0, "index.html": 0, "chat.html": 1 };
+const NAV_DURATION_MS = 280;
+const NAV_KEY = "kiro-nav-direction";
+
 function depthFor(href) {
   try {
     const file = new URL(href, location.href).pathname.split("/").pop() || "index.html";
     return PAGE_DEPTH[file] ?? 0;
   } catch (_) { return 0; }
 }
-function setTransitionDir(fromUrl, toUrl) {
-  const dir = depthFor(toUrl) > depthFor(fromUrl) ? "forward" : "back";
-  document.documentElement.dataset.transition = dir;
-}
-window.addEventListener("pageswap", (e) => {
-  if (!e.viewTransition || !e.activation) return;
-  setTransitionDir(location.href, e.activation.entry?.url || "");
-});
-window.addEventListener("pagereveal", (e) => {
-  if (!e.viewTransition || !e.activation) return;
-  setTransitionDir(e.activation.from?.url || "", location.href);
-});
+
+// 1. Leaving animation on click.
+document.addEventListener("click", (e) => {
+  const link = e.target.closest("a[href]");
+  if (!link) return;
+  if (link.target === "_blank") return;
+  const href = link.getAttribute("href");
+  if (!href) return;
+  const url = new URL(href, location.href);
+  // Same-origin .html nav only.
+  if (url.origin !== location.origin) return;
+  if (!/\.html$/.test(url.pathname)) return;
+  // Don't intercept hash-only changes.
+  if (url.pathname === location.pathname && url.search === location.search) return;
+
+  e.preventDefault();
+  const direction = depthFor(url.href) > depthFor(location.href) ? "forward" : "back";
+  sessionStorage.setItem(NAV_KEY, direction);
+  const app = document.querySelector(".app");
+  if (app) app.classList.add(`app--leaving-${direction}`);
+  setTimeout(() => { location.href = url.href; }, NAV_DURATION_MS);
+}, true);
+
+// 2. Entering animation on load.
+(function applyEnteringAnimation() {
+  const dir = sessionStorage.getItem(NAV_KEY);
+  if (!dir) return;
+  sessionStorage.removeItem(NAV_KEY);
+  // Wait until .app is in the DOM (script loads at end of body, but be safe).
+  function start() {
+    const app = document.querySelector(".app");
+    if (!app) return;
+    const cls = `app--entering-${dir}`;
+    app.classList.add(cls);
+    // Two rAFs to ensure the off-screen state paints before we remove it,
+    // so the transition has a starting point to interpolate from.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      app.classList.remove(cls);
+    }));
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start, { once: true });
+  } else {
+    start();
+  }
+})();
 
 /* =====================================================================
    Bottom-sheet dialogs

@@ -202,26 +202,23 @@
   --type-code-sm:   400 13px/20px var(--font-mono);
 }
 
-/* ---------- Cross-document view transitions ----------
-   Safari 18+ animates same-origin page navigation when both pages opt
-   in. app.js sets `documentElement.dataset.transition` to "forward"
-   or "back" based on relative page depth (see PAGE_DEPTH) inside the
-   pageswap / pagereveal handlers; this CSS chooses the slide direction. */
-@view-transition { navigation: auto; }
-
-::view-transition-group(root) {
-  animation-duration: 0.30s;
-  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+/* ---------- Page-to-page slide (manual) ----------
+   Safari 18's cross-document View Transitions API is flaky in PWA
+   standalone mode and only fully shipped in 18.2. To work on every
+   build we slide .app manually: the click handler in app.js intercepts
+   .html link navigation, applies `.app--leaving-{direction}`, waits
+   for the transition, then sets location.href. The destination page
+   starts in `.app--entering-{direction}` and animates back to rest. */
+.app {
+  transition:
+    transform 0.30s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.30s ease;
+  will-change: transform, opacity;
 }
-[data-transition="forward"]::view-transition-old(root) { animation: page-out-left 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
-[data-transition="forward"]::view-transition-new(root) { animation: page-in-right 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
-[data-transition="back"]::view-transition-old(root)    { animation: page-out-right 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
-[data-transition="back"]::view-transition-new(root)    { animation: page-in-left 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
-
-@keyframes page-out-left  { to   { transform: translateX(-30%); opacity: 0.5; } }
-@keyframes page-in-right  { from { transform: translateX(100%); } }
-@keyframes page-out-right { to   { transform: translateX(100%); } }
-@keyframes page-in-left   { from { transform: translateX(-30%); opacity: 0.5; } }
+.app--leaving-forward  { transform: translateX(-30%); opacity: 0.5; }
+.app--leaving-back     { transform: translateX(100%); }
+.app--entering-forward { transform: translateX(100%); transition: none; }
+.app--entering-back    { transform: translateX(-30%); opacity: 0.5; transition: none; }
 
 /* ---------- Reset ---------- */
 *,
@@ -1035,6 +1032,9 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   inset: 0;
   display: flex;
   flex-direction: column;
+  /* Opaque background is critical — without it the leaving view shows
+     through the entering view during the slide, which looks buggy. */
+  background: var(--bg-surface);
 }
 .sheet__view[hidden] { display: none; }
 
