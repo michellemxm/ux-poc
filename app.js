@@ -6,28 +6,12 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-/* =====================================================================
-   Keep the top bar pinned to the visible top edge.
-   ---------------------------------------------------------------------
-   When the iOS keyboard opens, Safari scrolls the layout viewport up
-   so the focused input sits above the keyboard. `.top-bar` is
-   `position: fixed; top: 0` (anchored to the LAYOUT viewport), so it
-   rides up off-screen with that scroll. The Visual Viewport API tells
-   us how far the visible area has shifted (`visualViewport.offsetTop`);
-   we counter that with a transform on every `.top-bar` so it stays
-   glued to the top of what the user can actually see. */
-function pinTopBars() {
-  const vv = window.visualViewport;
-  if (!vv) return;
-  const offset = Math.max(0, vv.offsetTop);
-  document.querySelectorAll(".top-bar").forEach((el) => {
-    el.style.transform = offset ? `translateY(${offset}px)` : "";
-  });
-}
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("scroll", pinTopBars);
-  window.visualViewport.addEventListener("resize", pinTopBars);
-}
+/* Keyboard-induced layout shift is handled by the viewport meta tag
+   `interactive-widget=resizes-content` (Safari 18+, Chrome 108+). The
+   browser shrinks the layout viewport when the keyboard opens, so
+   `position: fixed; top: 0` stays at the top of the visible area and
+   `position: fixed; bottom: 0` stays just above the keyboard — no JS
+   needed and no reactive lag. */
 
 /* =====================================================================
    SPA navigation with same-document View Transitions
@@ -143,7 +127,6 @@ if (!history.state || history.state.depth === undefined) {
 function init() {
   bindSheets();
   bindThemeSelector();
-  pinTopBars();
 }
 
 function bindSheets() {
