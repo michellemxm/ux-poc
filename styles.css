@@ -202,6 +202,27 @@
   --type-code-sm:   400 13px/20px var(--font-mono);
 }
 
+/* ---------- Cross-document view transitions ----------
+   Safari 18+ animates same-origin page navigation when both pages opt
+   in. app.js sets `documentElement.dataset.transition` to "forward"
+   or "back" based on relative page depth (see PAGE_DEPTH) inside the
+   pageswap / pagereveal handlers; this CSS chooses the slide direction. */
+@view-transition { navigation: auto; }
+
+::view-transition-group(root) {
+  animation-duration: 0.30s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+[data-transition="forward"]::view-transition-old(root) { animation: page-out-left 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
+[data-transition="forward"]::view-transition-new(root) { animation: page-in-right 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
+[data-transition="back"]::view-transition-old(root)    { animation: page-out-right 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
+[data-transition="back"]::view-transition-new(root)    { animation: page-in-left 0.30s cubic-bezier(0.32, 0.72, 0, 1) both; }
+
+@keyframes page-out-left  { to   { transform: translateX(-30%); opacity: 0.5; } }
+@keyframes page-in-right  { from { transform: translateX(100%); } }
+@keyframes page-out-right { to   { transform: translateX(100%); } }
+@keyframes page-in-left   { from { transform: translateX(-30%); opacity: 0.5; } }
+
 /* ---------- Reset ---------- */
 *,
 *::before,
@@ -908,27 +929,33 @@ dialog.sheet[open]::backdrop {
   dialog.sheet[open]::backdrop { background-color: rgba(0, 0, 0, 0); }
 }
 
+/* Floating panel — 8px from screen edges per Figma 131:11425. The
+   asymmetric corner radii (36px top, 56px bottom) come from the same
+   spec. `overflow: hidden` clips the inner views to that shape. */
 .sheet__panel {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
   display: flex;
   flex-direction: column;
   background: var(--bg-surface);
-  border-radius: 20px 20px 0 0;
+  border-radius: 36px 36px 56px 56px;
+  overflow: hidden;
   padding-bottom: env(safe-area-inset-bottom);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
-  max-height: 100%;
+  max-height: calc(100dvh - 60px - 8px);
   transform: translateY(10%);
-  transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  transition:
+    transform 0.28s cubic-bezier(0.32, 0.72, 0, 1),
+    height 0.28s cubic-bezier(0.32, 0.72, 0, 1);
 }
 dialog.sheet[open] .sheet__panel { transform: translateY(0); }
 @starting-style {
   dialog.sheet[open] .sheet__panel { transform: translateY(10%); }
 }
 .sheet--half .sheet__panel { height: 50dvh; }
-.sheet--max  .sheet__panel { height: 92dvh; }
+.sheet--max  .sheet__panel { height: calc(100dvh - 60px - 8px); }
 
 .sheet__handle {
   width: 36px;
@@ -990,17 +1017,38 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
 
 /* ---------- Sheet view stack ----------
    A single sheet can contain multiple views (root settings + drill-in
-   sub-panels). All sit as siblings inside .sheet__panel; only one is
-   visible at a time. The active view fills the remaining space below
-   the drag handle. Toggle via the `hidden` attribute (preferred) or
-   .sheet__view--active (legacy). */
-.sheet__view {
-  display: flex;
-  flex-direction: column;
+   sub-panels). They all overlap inside .sheet__view-stack; only one
+   is fully visible at a time. Forward navigation pushes the previous
+   view to the left while the next slides in from the right (and the
+   reverse for going back).
+
+   Forward = depth grows (root → theme). Back = depth shrinks. */
+.sheet__view-stack {
+  position: relative;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+}
+
+.sheet__view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
 }
 .sheet__view[hidden] { display: none; }
+
+/* Forward push: previous view slides 30% left as the new one rides in
+   from 100% right. Symmetric pop for going back. */
+.sheet__view--enter-from-right { animation: sheet-view-in-right 0.28s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.sheet__view--leave-to-left    { animation: sheet-view-out-left 0.28s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.sheet__view--enter-from-left  { animation: sheet-view-in-left 0.28s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.sheet__view--leave-to-right   { animation: sheet-view-out-right 0.28s cubic-bezier(0.32, 0.72, 0, 1) both; }
+
+@keyframes sheet-view-in-right  { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes sheet-view-out-left  { from { transform: translateX(0); }    to { transform: translateX(-30%); } }
+@keyframes sheet-view-in-left   { from { transform: translateX(-30%); } to { transform: translateX(0); } }
+@keyframes sheet-view-out-right { from { transform: translateX(0); }    to { transform: translateX(100%); } }
 
 /* ---------- Settings list (profile sheet) ---------- */
 .settings-list {

@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=23" />
+  <link rel="stylesheet" href="./styles.css?v=24" />
 </head>
 <body>
   <div class="app">
@@ -163,6 +163,7 @@
   <dialog id="sheet-profile" class="sheet sheet--max" aria-labelledby="sheet-profile-title">
     <div class="sheet__panel">
       <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__view-stack">
 
       <!-- ROOT VIEW: profile / settings list -->
       <section class="sheet__view sheet__view--active" data-view="root">
@@ -267,9 +268,11 @@
           </ul>
         </div>
       </section>
+
+      </div><!-- /.sheet__view-stack -->
     </div>
   </dialog>
 
-  <script src="./app.js?v=23"></script>
+  <script src="./app.js?v=24"></script>
 </body>
 </html>
