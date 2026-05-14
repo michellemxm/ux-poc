@@ -202,23 +202,28 @@
   --type-code-sm:   400 13px/20px var(--font-mono);
 }
 
-/* ---------- Page-to-page slide (manual) ----------
-   Safari 18's cross-document View Transitions API is flaky in PWA
-   standalone mode and only fully shipped in 18.2. To work on every
-   build we slide .app manually: the click handler in app.js intercepts
-   .html link navigation, applies `.app--leaving-{direction}`, waits
-   for the transition, then sets location.href. The destination page
-   starts in `.app--entering-{direction}` and animates back to rest. */
-.app {
-  transition:
-    transform 0.30s cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 0.30s ease;
-  will-change: transform, opacity;
+/* ---------- Page-to-page slide (same-document View Transitions) ----------
+   Cross-document VT is unreliable in iOS PWA standalone, so app.js
+   does SPA-style navigation: fetch the new page, swap .app + dialogs
+   in the DOM, all inside `document.startViewTransition()`. The browser
+   snapshots the old + new states and animates between them — no white
+   flash, no JS-induced lag between leaving and entering animations.
+
+   The direction is set on documentElement via `data-transition` right
+   before the transition starts. */
+::view-transition-group(root) {
+  animation-duration: 0.32s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 }
-.app--leaving-forward  { transform: translateX(-30%); opacity: 0.5; }
-.app--leaving-back     { transform: translateX(100%); }
-.app--entering-forward { transform: translateX(100%); transition: none; }
-.app--entering-back    { transform: translateX(-30%); opacity: 0.5; transition: none; }
+[data-transition="forward"]::view-transition-old(root) { animation: page-out-left 0.32s cubic-bezier(0.32, 0.72, 0, 1) both; }
+[data-transition="forward"]::view-transition-new(root) { animation: page-in-right 0.32s cubic-bezier(0.32, 0.72, 0, 1) both; }
+[data-transition="back"]::view-transition-old(root)    { animation: page-out-right 0.32s cubic-bezier(0.32, 0.72, 0, 1) both; }
+[data-transition="back"]::view-transition-new(root)    { animation: page-in-left 0.32s cubic-bezier(0.32, 0.72, 0, 1) both; }
+
+@keyframes page-out-left  { to   { transform: translateX(-30%); opacity: 0.5; } }
+@keyframes page-in-right  { from { transform: translateX(100%); } }
+@keyframes page-out-right { to   { transform: translateX(100%); } }
+@keyframes page-in-left   { from { transform: translateX(-30%); opacity: 0.5; } }
 
 /* ---------- Reset ---------- */
 *,
