@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=20" />
+  <link rel="stylesheet" href="./styles.css?v=21" />
 </head>
 <body>
   <div class="app">
@@ -54,7 +54,7 @@
           <p class="msg__text">I'll look into the redirect issue. Let me start by checking the recent commits to the auth module and then trace the redirect logic.</p>
 
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-terminal.svg" alt="" />
             <span class="op-row__kind">Command</span>
             <code class="op-row__title">git log --oneline -8 src/auth/</code>
             <span class="op-row__pill op-row__pill--ok">trusted</span>
@@ -64,7 +64,7 @@
           <blockquote class="msg__aside">Commit <code class="inline-code">e5509a3</code> extracted redirect logic to utils — that's likely where the return URL handling was dropped. Let me check that diff.</blockquote>
 
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-terminal.svg" alt="" />
             <span class="op-row__kind">Command</span>
             <code class="op-row__title">git diff e5509a3~1..e5509a3 -- src/auth/</code>
             <span class="op-row__pill op-row__pill--ok">trusted</span>
@@ -77,7 +77,7 @@
           <p class="msg__text">Found it. When the redirect logic was extracted to <code class="inline-code">getPostLoginRedirect()</code>, the <code class="inline-code">returnUrl</code> parameter from the query string and session was dropped. The function always returns <code class="inline-code">/dashboard</code>. Let me fix the utility and its call site.</p>
 
           <button class="op-row" data-sheet="sheet-diff">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-file-code.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-file-code.svg" alt="" />
             <span class="op-row__kind">2 edits to</span>
             <span class="op-row__filepill"><span class="op-row__filepill__ext">TS</span> util.ts</span>
             <span class="op-row__stat op-row__stat--add">+48</span>
@@ -91,7 +91,7 @@
           <p class="msg__text">Now let me run the existing auth tests plus add a targeted test for this redirect case.</p>
 
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-play.svg" alt="" />
             <span class="op-row__kind">Tool</span>
             <code class="op-row__title">test_runner · auth flow suite</code>
             <span class="op-row__pill op-row__pill--fail">2 fail</span>
@@ -101,7 +101,7 @@
           <blockquote class="msg__aside">The <code class="inline-code">isAllowedRedirect</code> guard isn't rejecting external URLs. I need to check and fix the validation function.</blockquote>
 
           <button class="op-row" data-sheet="sheet-diff">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-file-code.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-file-code.svg" alt="" />
             <span class="op-row__kind">Edited</span>
             <span class="op-row__filepill"><span class="op-row__filepill__ext">TS</span> util.ts</span>
             <span class="op-row__stat op-row__stat--add">+8</span>
@@ -110,7 +110,7 @@
           </button>
 
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-play.svg" alt="" />
             <span class="op-row__kind">Tool</span>
             <code class="op-row__title">test_runner · auth flow suite (rerun)</code>
             <span class="op-row__pill op-row__pill--ok">6 pass</span>
@@ -123,7 +123,7 @@
           <p class="msg__text">Tests are green. Let me also check if there are any other callers of the old function signature that need updating.</p>
 
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-eye.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-eye.svg" alt="" />
             <span class="op-row__kind">grep</span>
             <code class="op-row__title">getPostLoginRedirect()</code>
             <span class="op-row__pill op-row__pill--ok">3 hits</span>
@@ -133,7 +133,7 @@
           <blockquote class="msg__aside">There's another call site in <code class="inline-code">oauth-callback.ts</code> still using the old signature without <code class="inline-code">req</code>.</blockquote>
 
           <button class="op-row" data-sheet="sheet-diff">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-file-code.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-file-code.svg" alt="" />
             <span class="op-row__kind">Edited</span>
             <span class="op-row__filepill"><span class="op-row__filepill__ext">TS</span> oauth-callback.ts</span>
             <span class="op-row__stat op-row__stat--add">+1</span>
@@ -142,7 +142,7 @@
           </button>
 
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-play.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-play.svg" alt="" />
             <span class="op-row__kind">Command</span>
             <code class="op-row__title">npm test</code>
             <span class="op-row__pill op-row__pill--ok">47 pass</span>
@@ -179,7 +179,7 @@
         <!-- AGENT: commit -->
         <article class="msg msg--agent">
           <button class="op-row" data-sheet="sheet-cmd">
-            <img class="op-row__icon icon icon-light" src="./assets/icon-terminal.svg" alt="" />
+            <img class="op-row__icon icon icon-muted" src="./assets/icon-terminal.svg" alt="" />
             <span class="op-row__kind">Command</span>
             <code class="op-row__title">git commit -m "fix: restore returnUrl redirect…"</code>
             <span class="op-row__pill op-row__pill--ok">trusted</span>
@@ -280,6 +280,6 @@ cc814e9 test: add auth flow integration tests
     </div>
   </dialog>
 
-  <script src="./app.js?v=20"></script>
+  <script src="./app.js?v=21"></script>
 </body>
 </html>
