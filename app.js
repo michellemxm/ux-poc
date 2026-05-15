@@ -47,7 +47,7 @@ if (window.visualViewport) {
    Page hierarchy: index.html = depth 0, chat.html = depth 1. Going
    deeper is "forward" (new slides in from right); shallower is "back"
    (old slides out to right, new slides in from left). */
-const PAGE_DEPTH = { "": 0, "index.html": 0, "chat.html": 1 };
+const PAGE_DEPTH = { "": 0, "index.html": 0, "chat.html": 1, "newchat.html": 1 };
 function depthFor(href) {
   try {
     const file = new URL(href, location.href).pathname.split("/").pop() || "index.html";

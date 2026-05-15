@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-content" />
+  <title>Kiro · New chat</title>
+
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="theme-color" content="#F2F1F4" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Kiro" />
+  <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
+
+  <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
+  <link rel="stylesheet" href="./styles.css?v=32" />
+</head>
+<body>
+  <div class="app">
+
+    <header class="top-bar top-bar--chat">
+      <a class="icon-btn icon-btn--pill" href="./index.html" aria-label="Menu">
+        <img class="icon icon-light" src="./assets/icon-menu.svg" alt="" />
+      </a>
+      <div class="chat-title">
+        <button class="chat-title__selector" type="button" aria-haspopup="true">
+          <span class="chat-title__name">Claude Opus 4.7</span>
+          <img class="chat-title__caret icon icon-light" src="./assets/icon-chevron-down.svg" alt="" />
+        </button>
+        <span class="chat-title__meta">1M Context · High</span>
+      </div>
+      <div class="top-bar__actions">
+        <button class="icon-btn" aria-label="More">
+          <img class="icon icon-light" src="./assets/icon-ellipsis.svg" alt="" />
+        </button>
+        <button class="icon-btn icon-btn--inset-circle" aria-label="New chat">
+          <img class="icon icon-light" src="./assets/icon-edit.svg" alt="" />
+        </button>
+      </div>
+    </header>
+
+    <main class="content" id="content">
+      <section class="empty-state">
+        <img class="empty-state__ghost" src="./assets/logo-kiro-ghost.svg" alt="" />
+        <div class="empty-state__text">
+          <h1 class="empty-state__title">Let’s build</h1>
+          <p class="empty-state__subtitle">Plan, search or build anything</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="bottom-bar bottom-bar--connect">
+      <button class="connect-btn" type="button">
+        <span class="connect-btn__icon">
+          <img class="icon icon-subtle" src="./assets/icon-source-control.svg" alt="" />
+        </span>
+        <span class="connect-btn__label">Connect to a repo to get started…</span>
+      </button>
+    </div>
+
+  </div>
+
+  <script src="./app.js?v=32"></script>
+</body>
+</html>

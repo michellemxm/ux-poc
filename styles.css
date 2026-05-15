@@ -537,8 +537,76 @@ html, body { height: 100lvh; }
   justify-content: center;
   flex: 0 0 auto;
   box-shadow: var(--shadow-soft);
+  text-decoration: none;
 }
 .compose-btn:active { opacity: 0.85; }
+
+/* ---------- New-chat empty state (newchat.html) ---------- */
+.empty-state {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+.empty-state__ghost {
+  width: 39px;
+  height: 48px;
+  filter: var(--shadow-icon);
+}
+.empty-state__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.empty-state__title {
+  margin: 0;
+  font: var(--type-h3);                /* H3 */
+  color: var(--fg-default);
+}
+.empty-state__subtitle {
+  margin: 0;
+  font: var(--type-secondary);         /* Secondary */
+  color: var(--fg-muted);
+}
+
+/* Bottom-bar variant: a single dashed "Connect to a repo" CTA button
+   instead of a text input (Figma node 1:2). */
+.bottom-bar--connect .connect-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 48px;
+  padding: 8px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--prey-300);
+  border-radius: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+.bottom-bar--connect .connect-btn:active { background: var(--prey-100); }
+.connect-btn__icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.connect-btn__label {
+  flex: 1;
+  min-width: 0;
+  font: var(--type-primary);           /* Primary */
+  color: var(--fg-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* ---------- Menu screen ----------
    List rows stay edge-to-edge so tap area + :active highlight cover
