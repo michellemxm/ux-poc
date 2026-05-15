@@ -308,16 +308,18 @@ strong, b { font-weight: 500; }
 .icon-purple { filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(3504%) hue-rotate(257deg) brightness(102%) contrast(102%); }
 
 /* ---------- App shell ----------
-   Stretch to the *largest* possible viewport so we paint into any
-   area iOS would otherwise leave blank below the home indicator.
-   `100lvh` = largest viewport height; falls back to dvh/vh. */
+   `.app` is sized to the VISUAL viewport by app.js (its height is set
+   to `window.visualViewport.height` and it's translated by
+   `visualViewport.offsetTop`). That makes it shrink to the area above
+   the iOS keyboard, so the absolutely-positioned top/bottom bars and
+   the scrollable content all track the visible region instead of the
+   layout viewport. The `100lvh` here is just the pre-JS fallback. */
 html, body { height: 100lvh; }
 .app {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
   height: 100lvh;
   background: var(--bg-app);
 }
@@ -325,12 +327,14 @@ html, body { height: 100lvh; }
   html, body, .app { height: 100vh; }
 }
 
-/* ---------- Top bar (fixed) ----------
-   - Pinned to the very top of the viewport with `position: fixed`.
+/* ---------- Top bar ----------
+   - `position: absolute` relative to .app (NOT fixed to the layout
+     viewport) so it tracks the JS-resized .app and stays put when the
+     iOS keyboard opens.
    - Includes env(safe-area-inset-top) of padding so its inner row
      clears the iOS status bar (which overlays translucently). */
 .top-bar {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -448,7 +452,7 @@ html, body { height: 100lvh; }
    indicator; the gradient fade fills the safe-area zone and softly
    meets the scrolling content above. */
 .bottom-bar {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
@@ -509,6 +513,15 @@ html, body { height: 100lvh; }
   user-select: text;
 }
 .search-input:empty:not(:focus)::before {
+  content: attr(data-placeholder);
+  color: var(--fg-subtle);
+}
+/* Menu search is a static affordance (a future dedicated search page),
+   not an editable field — no keyboard, just a tappable target. */
+.search-input--static {
+  cursor: pointer;
+}
+.search-input--static::before {
   content: attr(data-placeholder);
   color: var(--fg-subtle);
 }

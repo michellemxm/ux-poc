@@ -7,27 +7,31 @@ if ("serviceWorker" in navigator) {
 }
 
 /* =====================================================================
-   Keyboard avoidance
+   Keyboard avoidance — size .app to the visual viewport
    ---------------------------------------------------------------------
-   `body { position: fixed; inset: 0 }` blocks iOS from scrolling the
-   layout viewport when an input is focused — so the .top-bar stays
-   anchored at the top of the visible area without any JS intervention.
-   The .bottom-bar still needs to be lifted above the keyboard though;
-   we read `visualViewport.height` (which shrinks the moment iOS starts
-   animating the keyboard) and translateY the bar up by the keyboard's
-   height. The same listener fires whenever the keyboard shows, hides,
-   or changes height (e.g. autocomplete bar appears). */
-function liftBottomBars() {
+   `body { position: fixed; inset: 0 }` blocks document scroll, but iOS
+   still OFFSETS the visual viewport to keep a focused input above the
+   keyboard, which dragged our layout-fixed bars off-screen. The fix:
+   make `.app` exactly match the visual viewport — set its height to
+   `visualViewport.height` and translate it by `visualViewport.offsetTop`.
+   Because the top/bottom bars are `position: absolute` relative to
+   `.app` (not fixed to the layout viewport), they ride with .app:
+   the top bar stays at the visible top, the bottom bar sits right
+   above the keyboard, and `.content` scrolls between them. One sync
+   covers keyboard open, close, and height changes. */
+function syncAppToViewport() {
   const vv = window.visualViewport;
   if (!vv) return;
-  const kb = Math.max(0, window.innerHeight - vv.height);
-  document.querySelectorAll(".bottom-bar").forEach((el) => {
-    el.style.transform = kb > 0 ? `translate3d(0, ${-kb}px, 0)` : "";
+  const h = Math.round(vv.height);
+  const top = Math.round(vv.offsetTop);
+  document.querySelectorAll(".app").forEach((app) => {
+    app.style.height = h + "px";
+    app.style.transform = top ? `translateY(${top}px)` : "";
   });
 }
 if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", liftBottomBars);
-  window.visualViewport.addEventListener("scroll", liftBottomBars);
+  window.visualViewport.addEventListener("resize", syncAppToViewport);
+  window.visualViewport.addEventListener("scroll", syncAppToViewport);
 }
 
 /* =====================================================================
@@ -144,7 +148,7 @@ if (!history.state || history.state.depth === undefined) {
 function init() {
   bindSheets();
   bindThemeSelector();
-  liftBottomBars();
+  syncAppToViewport();
 }
 
 function bindSheets() {
