@@ -249,7 +249,12 @@ body {
 }
 
 body {
-  /* Lock the page; scrolling happens inside .content */
+  /* Hard-lock the document so iOS can't scroll the layout viewport
+     when the on-screen keyboard opens. Without this, focusing an input
+     causes iOS to push the layout up and our `position: fixed` chrome
+     rides off-screen. Scrolling happens inside .content. */
+  position: fixed;
+  inset: 0;
   overflow: hidden;
 }
 
@@ -482,6 +487,11 @@ html, body { height: 100lvh; }
   box-shadow: var(--shadow-soft);
 }
 
+/* Search / chat input fields are <div contenteditable>, not <input>,
+   so iOS doesn't attach the Form Assistant accessory bar (the row of
+   ^ ⋁ ✓ above the keyboard). Placeholder is faked via a `::before`
+   that reads `data-placeholder`, shown only while the field is empty
+   and unfocused. */
 .search-input {
   flex: 1;
   min-width: 0;
@@ -492,8 +502,16 @@ html, body { height: 100lvh; }
   color: var(--fg-default);
   font: var(--type-primary);                /* Primary */
   padding: 0 4px;
+  display: flex;
+  align-items: center;
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
 }
-.search-input::placeholder { color: var(--fg-subtle); }
+.search-input:empty:not(:focus)::before {
+  content: attr(data-placeholder);
+  color: var(--fg-subtle);
+}
 
 .compose-btn {
   width: 48px;
@@ -1230,8 +1248,16 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   color: var(--fg-default);
   font: var(--type-primary);                /* Primary */
   padding: 0 4px;
+  display: flex;
+  align-items: center;
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
 }
-.chat-input__field::placeholder { color: var(--fg-subtle); }
+.chat-input__field:empty:not(:focus)::before {
+  content: attr(data-placeholder);
+  color: var(--fg-subtle);
+}
 
 /* Item link wrapper — turns a whole .item into a tappable navigation
    target without changing its visual layout. */

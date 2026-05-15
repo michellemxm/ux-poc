@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=28" />
+  <link rel="stylesheet" href="./styles.css?v=29" />
 </head>
 <body>
   <div class="app">
@@ -204,7 +204,7 @@
         <button class="icon-btn" aria-label="Add attachment">
           <img class="icon icon-light" src="./assets/icon-add.svg" alt="" />
         </button>
-        <input class="chat-input__field" type="text" placeholder="Ask Kiro…" aria-label="Ask Kiro" />
+        <div class="chat-input__field" contenteditable="true" role="textbox" aria-label="Ask Kiro" data-placeholder="Ask Kiro…"></div>
         <button class="icon-btn icon-btn--inset-circle" aria-label="Voice">
           <img class="icon icon-light" src="./assets/icon-mic.svg" alt="" />
         </button>
@@ -280,6 +280,6 @@ cc814e9 test: add auth flow integration tests
     </div>
   </dialog>
 
-  <script src="./app.js?v=28"></script>
+  <script src="./app.js?v=29"></script>
 </body>
 </html>

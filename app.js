@@ -6,12 +6,29 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-/* Keyboard-induced layout shift is handled by the viewport meta tag
-   `interactive-widget=resizes-content` (Safari 18+, Chrome 108+). The
-   browser shrinks the layout viewport when the keyboard opens, so
-   `position: fixed; top: 0` stays at the top of the visible area and
-   `position: fixed; bottom: 0` stays just above the keyboard — no JS
-   needed and no reactive lag. */
+/* =====================================================================
+   Keyboard avoidance
+   ---------------------------------------------------------------------
+   `body { position: fixed; inset: 0 }` blocks iOS from scrolling the
+   layout viewport when an input is focused — so the .top-bar stays
+   anchored at the top of the visible area without any JS intervention.
+   The .bottom-bar still needs to be lifted above the keyboard though;
+   we read `visualViewport.height` (which shrinks the moment iOS starts
+   animating the keyboard) and translateY the bar up by the keyboard's
+   height. The same listener fires whenever the keyboard shows, hides,
+   or changes height (e.g. autocomplete bar appears). */
+function liftBottomBars() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const kb = Math.max(0, window.innerHeight - vv.height);
+  document.querySelectorAll(".bottom-bar").forEach((el) => {
+    el.style.transform = kb > 0 ? `translate3d(0, ${-kb}px, 0)` : "";
+  });
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", liftBottomBars);
+  window.visualViewport.addEventListener("scroll", liftBottomBars);
+}
 
 /* =====================================================================
    SPA navigation with same-document View Transitions
@@ -127,6 +144,7 @@ if (!history.state || history.state.depth === undefined) {
 function init() {
   bindSheets();
   bindThemeSelector();
+  liftBottomBars();
 }
 
 function bindSheets() {
