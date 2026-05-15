@@ -607,6 +607,8 @@ html, body { height: 100lvh; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Once a repo is picked the placeholder becomes a real value. */
+.connect-btn__label--connected { color: var(--fg-default); }
 
 /* ---------- Menu screen ----------
    List rows stay edge-to-edge so tap area + :active highlight cover
@@ -1251,6 +1253,82 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   visibility: hidden;
 }
 .option-row--selected .option-row__check { visibility: visible; }
+
+/* ---------- Repo list (connect-repo sheet) ----------
+   Grouped, single-select. Section headers reuse the Caption ramp /
+   subtle color of the menu's .section-header__title. Rows have no
+   dividers (matches Figma 70:8645). */
+.repo-list {
+  padding: 4px 0 8px;
+}
+.repo-list__header {
+  margin: 0;
+  padding: 16px 24px 8px;
+  font: var(--type-caption);                /* Caption */
+  color: var(--fg-subtle);
+  letter-spacing: 0.02em;
+}
+.repo-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 47px;
+  padding: 12px 24px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.repo-row:active { background: var(--pressed); }
+.repo-row__icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+.repo-row__label {
+  flex: 1;
+  min-width: 0;
+  font: var(--type-primary);                /* Primary */
+  color: var(--fg-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.repo-row__check {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  visibility: hidden;
+}
+.repo-row--selected .repo-row__check { visibility: visible; }
+
+/* ---------- Sheet footer (pinned search + action) ----------
+   Sits below the scrolling body, flush to the panel bottom. The panel
+   already adds env(safe-area-inset-bottom), so the footer only needs
+   its own visual padding. */
+.sheet__footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 16px;
+}
+.sheet__footer .search-field { flex: 1; }
+.repo-refresh-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-inverse);
+  color: var(--fg-on-inverse);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  box-shadow: var(--shadow-soft);
+}
+.repo-refresh-btn:active { opacity: 0.85; }
 
 .sheet__section-label {
   margin: 12px 0 6px;

@@ -1,4 +1,4 @@
-const CACHE = "kiro-v32";
+const CACHE = "kiro-v33";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -45,8 +45,9 @@ const PRECACHE = [
   "./assets/icon-question.svg",
   "./assets/icon-sign-out.svg",
   "./assets/icon-check.svg",
-  // new-chat empty state
+  // new-chat empty state + connect-repo sheet
   "./assets/icon-source-control.svg",
+  "./assets/icon-lock.svg",
   // fonts
   "./fonts/AWSDiatypeRounded-Regular.otf",
   "./fonts/AWSDiatypeRounded-Medium.otf",

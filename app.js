@@ -148,6 +148,7 @@ if (!history.state || history.state.depth === undefined) {
 function init() {
   bindSheets();
   bindThemeSelector();
+  bindRepoSelect();
   syncAppToViewport();
 }
 
@@ -298,6 +299,40 @@ function bindThemeSelector() {
         r.setAttribute("aria-checked", String(selected));
       });
       if (valueEl && labels[theme]) valueEl.textContent = labels[theme];
+    });
+  });
+}
+
+/* =====================================================================
+   Connect-repo sheet (newchat.html)
+   ---------------------------------------------------------------------
+   Single-select repo list. Picking a row marks it selected, updates the
+   bottom-bar connect button to show the chosen repo, and closes the
+   sheet. Re-bound on every init() since the sheet markup is replaced on
+   SPA navigation. */
+function bindRepoSelect() {
+  const sheet = document.getElementById("sheet-connect-repo");
+  if (!sheet || sheet.dataset.repoBound) return;
+  sheet.dataset.repoBound = "1";
+
+  const rows = sheet.querySelectorAll(".repo-row");
+  rows.forEach((row) => {
+    row.addEventListener("click", () => {
+      rows.forEach((r) => {
+        const selected = r === row;
+        r.classList.toggle("repo-row--selected", selected);
+        r.setAttribute("aria-checked", String(selected));
+      });
+
+      const name = row.querySelector(".repo-row__label")?.textContent?.trim();
+      const label = document.querySelector(".connect-btn__label");
+      if (name && label) {
+        label.textContent = name;
+        label.classList.add("connect-btn__label--connected");
+      }
+
+      const dlg = row.closest("dialog.sheet");
+      if (dlg) dlg.close();
     });
   });
 }

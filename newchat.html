@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=32" />
+  <link rel="stylesheet" href="./styles.css?v=33" />
 </head>
 <body>
   <div class="app">
@@ -52,7 +52,7 @@
     </main>
 
     <div class="bottom-bar bottom-bar--connect">
-      <button class="connect-btn" type="button">
+      <button class="connect-btn" type="button" data-sheet="sheet-connect-repo">
         <span class="connect-btn__icon">
           <img class="icon icon-subtle" src="./assets/icon-source-control.svg" alt="" />
         </span>
@@ -62,6 +62,109 @@
 
   </div>
 
-  <script src="./app.js?v=32"></script>
+  <!-- ============== CONNECT-REPO SHEET ============== -->
+  <!-- Max-height bottom sheet. Repos mirror the menu's chat metadata
+       (index.html .item__meta), grouped by owner: kiro-ux → Kiro,
+       acme-dev → ACME. Single-select; picking one updates the connect
+       button label and closes the sheet. -->
+  <dialog id="sheet-connect-repo" class="sheet sheet--max" aria-labelledby="sheet-connect-repo-title">
+    <div class="sheet__panel">
+      <div class="sheet__handle" aria-hidden="true"></div>
+
+      <header class="sheet__header">
+        <button class="sheet__close" data-close aria-label="Close">
+          <img class="icon icon-light" src="./assets/icon-close.svg" alt="" />
+        </button>
+        <div class="sheet__title-block">
+          <h2 class="sheet__title" id="sheet-connect-repo-title">Connect to a repository</h2>
+        </div>
+        <span aria-hidden="true"></span>
+      </header>
+
+      <div class="sheet__body sheet__body--flush">
+        <div class="repo-list" role="radiogroup" aria-label="Repositories">
+
+          <h3 class="repo-list__header">Kiro</h3>
+          <button class="repo-row repo-row--selected" type="button" role="radio" aria-checked="true" data-repo="kiro-ux/kiro-app">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">kiro-app</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+
+          <h3 class="repo-list__header">ACME</h3>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/auth-service">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">auth-service</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/dashboard-ui">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">dashboard-ui</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/notifications">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">notifications</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/project-tracker">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">project-tracker</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/mobile-app">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">mobile-app</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/realtime-server">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">realtime-server</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/infra-config">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">infra-config</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/core-db">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">core-db</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/search-engine">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">search-engine</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/storefront">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">storefront</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+          <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/payments-api">
+            <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
+            <span class="repo-row__label">payments-api</span>
+            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+          </button>
+
+        </div>
+      </div>
+
+      <div class="sheet__footer">
+        <div class="search-field">
+          <button class="icon-btn icon-btn--sm" type="button" aria-label="Search">
+            <img class="icon icon-muted" src="./assets/icon-search.svg" alt="" />
+          </button>
+          <div class="search-input search-input--static" role="button" aria-label="Search and filter repositories" data-placeholder="Search and filter your repositories…"></div>
+        </div>
+        <button class="repo-refresh-btn" type="button" aria-label="Refresh repositories">
+          <img class="icon icon-on-dark" src="./assets/icon-refresh.svg" alt="" />
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="./app.js?v=33"></script>
 </body>
 </html>
