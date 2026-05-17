@@ -146,7 +146,6 @@
   --filter-icon-fg:        brightness(0); /* white → black for light theme */
   --filter-icon-muted:     brightness(0) saturate(100%) invert(36%) sepia(7%) saturate(380%) hue-rotate(231deg) brightness(95%) contrast(86%); /* ≈ prey-500 */
   --filter-icon-subtle:    brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%); /* ≈ prey-400 */
-  --filter-icon-accent:    brightness(0) saturate(100%) invert(15%) sepia(94%) saturate(2754%) hue-rotate(257deg) brightness(134%) contrast(81%); /* ≈ purple-600 (--fg-accent) */
   --filter-icon-on-inverse: none; /* stays white on dark surface */
 
   /* Wordmark fill (logo-kiro-text.svg is filled with Plack #141217). */
@@ -172,7 +171,6 @@
   --filter-icon-fg:        none;
   --filter-icon-muted:     brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%);
   --filter-icon-subtle:    brightness(0) saturate(100%) invert(80%) sepia(5%) saturate(150%) hue-rotate(231deg);
-  --filter-icon-accent:    brightness(0) saturate(100%) invert(50%) sepia(70%) saturate(3800%) hue-rotate(230deg) brightness(120%) contrast(99%); /* ≈ purple-300 (--fg-accent, dark) */
   --filter-icon-on-inverse: brightness(0);
 
   --filter-wordmark: invert(1) brightness(2);
@@ -308,7 +306,6 @@ strong, b { font-weight: 500; }
 .icon-on-dark{ filter: var(--filter-icon-on-inverse); }/* always white-ish on --bg-inverse */
 .icon-dark   { filter: brightness(0) saturate(100%); } /* always solid black */
 .icon-purple { filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(3504%) hue-rotate(257deg) brightness(102%) contrast(102%); }
-.icon-accent { filter: var(--filter-icon-accent); }    /* matches --fg-accent (Purple/600) */
 
 /* ---------- App shell ----------
    `.app` is sized to the VISUAL viewport by app.js (its height is set
@@ -636,6 +633,14 @@ html, body { height: 100lvh; }
   width: 16px;
   height: 16px;
   flex: 0 0 auto;
+}
+/* Accent glyph recolored via mask (exact --fg-accent, matches the
+   label text). A filter() can only approximate Purple/600. */
+.repo-pill__icon {
+  display: block;
+  background-color: var(--fg-accent);
+  -webkit-mask: url("./assets/icon-source-control.svg") center / 16px 16px no-repeat;
+  mask: url("./assets/icon-source-control.svg") center / 16px 16px no-repeat;
 }
 .repo-pill__label {
   min-width: 0;
@@ -1038,35 +1043,31 @@ dialog.sheet {
   margin: 0;
   padding: 0;
   border: 0;
-  background: transparent;
+  /* The dim lives on the dialog itself, not ::backdrop: in an iOS
+     standalone PWA, dialog::backdrop is clipped to the safe area and
+     leaves the status-bar strip undimmed. A position:fixed dialog with
+     viewport-fit=cover paints behind the status bar, so the dim
+     reaches the very top. */
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   color: inherit;
   overflow: visible;
   opacity: 0;
   transition:
     opacity 0.24s ease,
-    display 0.24s allow-discrete,
-    overlay 0.24s allow-discrete;
-}
-dialog.sheet[open] { opacity: 1; }
-@starting-style {
-  dialog.sheet[open] { opacity: 0; }
-}
-
-dialog.sheet::backdrop {
-  background-color: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  transition:
     background-color 0.24s ease,
     display 0.24s allow-discrete,
     overlay 0.24s allow-discrete;
 }
-dialog.sheet[open]::backdrop {
-  background-color: rgba(0, 0, 0, 0.40);
+dialog.sheet[open] {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.40);
 }
 @starting-style {
-  dialog.sheet[open]::backdrop { background-color: rgba(0, 0, 0, 0); }
+  dialog.sheet[open] { opacity: 0; background: rgba(0, 0, 0, 0); }
 }
+dialog.sheet::backdrop { background: transparent; }
 
 /* Floating panel — 8px from screen edges per Figma 131:11425. The
    asymmetric corner radii (36px top, 56px bottom) come from the same
@@ -1333,10 +1334,15 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   white-space: nowrap;
 }
 .repo-row__check {
+  display: block;
   width: 16px;
   height: 16px;
   flex: 0 0 auto;
   visibility: hidden;
+  /* Exact Purple/600 via mask — see .repo-pill__icon note. */
+  background-color: var(--fg-accent);
+  -webkit-mask: url("./assets/icon-check.svg") center / 16px 16px no-repeat;
+  mask: url("./assets/icon-check.svg") center / 16px 16px no-repeat;
 }
 .repo-row--selected .repo-row__check { visibility: visible; }
 
@@ -1355,7 +1361,7 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
 .repo-refresh-btn {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 20px;
   background: var(--bg-inverse);
   color: var(--fg-on-inverse);
   display: inline-flex;

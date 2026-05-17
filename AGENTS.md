@@ -225,6 +225,14 @@ Font stack:
 
 ## 6. Theming
 
+> **Rule — always implement color as if both Light AND Dark themes exist.**
+> Only Light is active today, but Dark is a real future target, not hypothetical. Whenever you touch anything color-related:
+> - Never hard-code a color value (hex/rgb/hsl) in a component. Read a theme-aware **semantic token** (`--fg-*`, `--bg-*`, `--divider`, …). If no token fits, add one — don't inline.
+> - Every new color/tint **must be defined in BOTH the Light `:root` block and the Dark block** in the same change, even though Dark is commented out. A token that only exists in Light will break the day Dark is enabled.
+> - Recoloring techniques must be theme-aware too: SVG tinting (`filter`/`mask` + `background-color`) must resolve to a token (e.g. `var(--fg-accent)`, `var(--filter-icon-*)`) so it flips automatically — never a raw filter/color baked for Light only.
+> - Prefer an exact-color technique (`mask` + `background-color: var(--token)`) over an approximate one (`filter:` solved for one hex) when a color must match a sibling exactly — a filter can't hit an exact token and won't track a theme swap.
+> - The Dark block is a single `/* … */` comment. **Never put a `/* … */` comment inside it** (CSS comments don't nest — an inner `*/` closes the block early and corrupts the rest of `:root`). Annotate dark values with a trailing token name, no `/* */`.
+
 The active theme is **Light**. The Dark theme block is kept inline as a `/* … */` comment immediately below it in `styles.css`. When swapping themes later:
 
 - Move the Light block into a `[data-theme="light"]` selector and Dark into `[data-theme="dark"]`, or wrap with `@media (prefers-color-scheme: dark)`.
