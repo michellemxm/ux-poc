@@ -311,7 +311,12 @@ When you change `styles.css` or `app.js`:
    <link rel="stylesheet" href="./styles.css?v=7" />
    <script src="./app.js?v=7"></script>
    ```
-3. Mention to the user that they need to **force-quit and relaunch** the home-screen app once to pick up the new SW.
+3. Bump the **visible build version** in the profile sheet so it always matches the
+   deployed `CACHE`. In `index.html`, the Help &amp; Feedback row carries
+   `<span class="setting-row__value">v.N</span>` — set `N` to the same number as
+   `kiro-vN` / `?v=N`. This is the user-facing way to confirm which build is live, so
+   it must move in lockstep with every bump (never leave it stale).
+4. Mention to the user that they need to **force-quit and relaunch** the home-screen app once to pick up the new SW.
 
 Without both bumps, stale clients keep showing the old CSS even after the new SW activates.
 
@@ -405,6 +410,7 @@ The user reviews and commits — you just leave the working tree in a shippable 
 
 - [ ] Bumped `sw.js` `CACHE` version if any shipped file changed.
 - [ ] Bumped `?v=N` query string in `index.html` for `styles.css` / `app.js`.
+- [ ] Bumped the visible `v.N` in the profile sheet's Help &amp; Feedback row (`index.html`) to match `CACHE`.
 - [ ] Updated `manifest.webmanifest` `theme_color`/`background_color` if the theme changed.
 - [ ] No hard-coded colors in component CSS — everything reads from `--*` tokens.
 - [ ] Any new icon was **copied** into `./assets/` (not referenced from `kiro-ds-icons/`).

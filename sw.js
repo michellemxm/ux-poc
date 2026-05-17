@@ -1,4 +1,4 @@
-const CACHE = "kiro-v39";
+const CACHE = "kiro-v40";
 const PRECACHE = [
   "./",
   "./index.html",
