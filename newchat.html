@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=33" />
+  <link rel="stylesheet" href="./styles.css?v=37" />
 </head>
 <body>
   <div class="app">
@@ -47,6 +47,11 @@
         <div class="empty-state__text">
           <h1 class="empty-state__title">Let’s build</h1>
           <p class="empty-state__subtitle">Plan, search or build anything</p>
+          <button class="repo-pill" type="button" data-sheet="sheet-connect-repo" aria-label="Change repository" hidden>
+            <img class="repo-pill__icon icon icon-accent" src="./assets/icon-source-control.svg" alt="" />
+            <span class="repo-pill__label"></span>
+            <img class="repo-pill__caret icon icon-subtle" src="./assets/icon-chevron-down.svg" alt="" />
+          </button>
         </div>
       </section>
     </main>
@@ -58,6 +63,18 @@
         </span>
         <span class="connect-btn__label">Connect to a repo to get started…</span>
       </button>
+    </div>
+
+    <div class="bottom-bar bottom-bar--chat" role="search" hidden>
+      <div class="chat-input">
+        <button class="icon-btn" aria-label="Add attachment">
+          <img class="icon icon-light" src="./assets/icon-add.svg" alt="" />
+        </button>
+        <div class="chat-input__field" contenteditable="true" role="textbox" aria-label="Ask Kiro" data-placeholder="Ask Kiro…"></div>
+        <button class="icon-btn icon-btn--inset-circle" aria-label="Voice">
+          <img class="icon icon-light" src="./assets/icon-mic.svg" alt="" />
+        </button>
+      </div>
     </div>
 
   </div>
@@ -88,64 +105,64 @@
           <button class="repo-row repo-row--selected" type="button" role="radio" aria-checked="true" data-repo="kiro-ux/kiro-app">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">kiro-app</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
 
           <h3 class="repo-list__header">ACME</h3>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/auth-service">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">auth-service</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/dashboard-ui">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">dashboard-ui</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/notifications">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">notifications</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/project-tracker">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">project-tracker</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/mobile-app">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">mobile-app</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/realtime-server">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">realtime-server</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/infra-config">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">infra-config</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/core-db">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">core-db</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/search-engine">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">search-engine</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/storefront">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">storefront</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
           <button class="repo-row" type="button" role="radio" aria-checked="false" data-repo="acme-dev/payments-api">
             <img class="repo-row__icon icon icon-muted" src="./assets/icon-lock.svg" alt="Private" />
             <span class="repo-row__label">payments-api</span>
-            <img class="repo-row__check icon icon-purple" src="./assets/icon-check.svg" alt="Selected" />
+            <img class="repo-row__check icon icon-accent" src="./assets/icon-check.svg" alt="Selected" />
           </button>
 
         </div>
@@ -165,6 +182,6 @@
     </div>
   </dialog>
 
-  <script src="./app.js?v=33"></script>
+  <script src="./app.js?v=37"></script>
 </body>
 </html>

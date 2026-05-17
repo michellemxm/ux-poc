@@ -146,6 +146,7 @@
   --filter-icon-fg:        brightness(0); /* white → black for light theme */
   --filter-icon-muted:     brightness(0) saturate(100%) invert(36%) sepia(7%) saturate(380%) hue-rotate(231deg) brightness(95%) contrast(86%); /* ≈ prey-500 */
   --filter-icon-subtle:    brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%); /* ≈ prey-400 */
+  --filter-icon-accent:    brightness(0) saturate(100%) invert(15%) sepia(94%) saturate(2754%) hue-rotate(257deg) brightness(134%) contrast(81%); /* ≈ purple-600 (--fg-accent) */
   --filter-icon-on-inverse: none; /* stays white on dark surface */
 
   /* Wordmark fill (logo-kiro-text.svg is filled with Plack #141217). */
@@ -171,6 +172,7 @@
   --filter-icon-fg:        none;
   --filter-icon-muted:     brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%);
   --filter-icon-subtle:    brightness(0) saturate(100%) invert(80%) sepia(5%) saturate(150%) hue-rotate(231deg);
+  --filter-icon-accent:    brightness(0) saturate(100%) invert(50%) sepia(70%) saturate(3800%) hue-rotate(230deg) brightness(120%) contrast(99%); /* ≈ purple-300 (--fg-accent, dark) */
   --filter-icon-on-inverse: brightness(0);
 
   --filter-wordmark: invert(1) brightness(2);
@@ -306,6 +308,7 @@ strong, b { font-weight: 500; }
 .icon-on-dark{ filter: var(--filter-icon-on-inverse); }/* always white-ish on --bg-inverse */
 .icon-dark   { filter: brightness(0) saturate(100%); } /* always solid black */
 .icon-purple { filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(3504%) hue-rotate(257deg) brightness(102%) contrast(102%); }
+.icon-accent { filter: var(--filter-icon-accent); }    /* matches --fg-accent (Purple/600) */
 
 /* ---------- App shell ----------
    `.app` is sized to the VISUAL viewport by app.js (its height is set
@@ -471,6 +474,10 @@ html, body { height: 100lvh; }
   );
   /* No backdrop-filter — see top-bar note. */
 }
+/* Author rules below set no `display`, so the UA [hidden] already
+   hides the bar — but state it explicitly so a future display rule
+   can't silently un-hide it (same guard as .sheet__view[hidden]). */
+.bottom-bar[hidden] { display: none; }
 
 .search-row {
   display: flex;
@@ -607,8 +614,37 @@ html, body { height: 100lvh; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* Once a repo is picked the placeholder becomes a real value. */
-.connect-btn__label--connected { color: var(--fg-default); }
+/* Repo / branch dropdown under the empty-state subtitle. Shown once a
+   repo is picked; tapping it re-opens the connect-repo sheet. Accent
+   color + branch glyph per Figma 66:3588. */
+.repo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.repo-pill[hidden] { display: none; }
+.repo-pill:active { opacity: 0.7; }
+.repo-pill__icon,
+.repo-pill__caret {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+.repo-pill__label {
+  min-width: 0;
+  font: var(--type-secondary);         /* Secondary */
+  color: var(--fg-accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* ---------- Menu screen ----------
    List rows stay edge-to-edge so tap area + :active highlight cover

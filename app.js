@@ -306,10 +306,11 @@ function bindThemeSelector() {
 /* =====================================================================
    Connect-repo sheet (newchat.html)
    ---------------------------------------------------------------------
-   Single-select repo list. Picking a row marks it selected, updates the
-   bottom-bar connect button to show the chosen repo, and closes the
-   sheet. Re-bound on every init() since the sheet markup is replaced on
-   SPA navigation. */
+   Single-select repo list. Picking a row marks it selected, then swaps
+   the "Connect to a repo" CTA for the chat-input bar and reveals the
+   repo/branch dropdown under the empty state (which itself re-opens
+   this sheet). Re-bound on every init() since the sheet markup is
+   replaced on SPA navigation. */
 function bindRepoSelect() {
   const sheet = document.getElementById("sheet-connect-repo");
   if (!sheet || sheet.dataset.repoBound) return;
@@ -325,10 +326,16 @@ function bindRepoSelect() {
       });
 
       const name = row.querySelector(".repo-row__label")?.textContent?.trim();
-      const label = document.querySelector(".connect-btn__label");
-      if (name && label) {
-        label.textContent = name;
-        label.classList.add("connect-btn__label--connected");
+      if (name) {
+        const pill = document.querySelector(".repo-pill");
+        const pillLabel = document.querySelector(".repo-pill__label");
+        if (pillLabel) pillLabel.textContent = name + "/main";
+        if (pill) pill.hidden = false;
+
+        const connectBar = document.querySelector(".bottom-bar--connect");
+        const chatBar = document.querySelector(".bottom-bar--chat");
+        if (connectBar) connectBar.hidden = true;
+        if (chatBar) chatBar.hidden = false;
       }
 
       const dlg = row.closest("dialog.sheet");
