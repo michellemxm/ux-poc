@@ -1043,31 +1043,45 @@ dialog.sheet {
   margin: 0;
   padding: 0;
   border: 0;
-  /* The dim lives on the dialog itself, not ::backdrop: in an iOS
-     standalone PWA, dialog::backdrop is clipped to the safe area and
-     leaves the status-bar strip undimmed. A position:fixed dialog with
-     viewport-fit=cover paints behind the status bar, so the dim
-     reaches the very top. */
-  background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  /* The dialog stays fully transparent. The dim/blur is painted by a
+     separate `body::after` scrim (see below): a showModal() dialog and
+     its ::backdrop are in the browser top layer, which iOS WebKit clips
+     to the safe area in a standalone PWA — leaving the status-bar strip
+     undimmed. A normal position:fixed element under viewport-fit=cover
+     paints behind the status bar, so the scrim reaches the very top. */
+  background: transparent;
   color: inherit;
   overflow: visible;
   opacity: 0;
   transition:
     opacity 0.24s ease,
-    background-color 0.24s ease,
     display 0.24s allow-discrete,
     overlay 0.24s allow-discrete;
 }
-dialog.sheet[open] {
-  opacity: 1;
-  background: rgba(0, 0, 0, 0.40);
-}
+dialog.sheet[open] { opacity: 1; }
 @starting-style {
-  dialog.sheet[open] { opacity: 0; background: rgba(0, 0, 0, 0); }
+  dialog.sheet[open] { opacity: 0; }
 }
 dialog.sheet::backdrop { background: transparent; }
+
+/* Full-bleed dim on a NON-top-layer pseudo-element so it paints behind
+   the iOS status bar (the dialog/::backdrop top layer is safe-area
+   clipped in a standalone PWA). app.js toggles `.sheet-open` on <html>
+   around showModal()/close. The top-layer dialog still paints above
+   this, so the opaque .sheet__panel stays visible on top. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.40);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  transition: opacity 0.24s ease;
+}
+html.sheet-open body::after { opacity: 1; }
 
 /* Floating panel — 8px from screen edges per Figma 131:11425. The
    asymmetric corner radii (36px top, 56px bottom) come from the same

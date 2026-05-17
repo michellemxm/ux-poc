@@ -163,6 +163,9 @@ function bindSheets() {
       const dlg = document.getElementById(id);
       if (!dlg || typeof dlg.showModal !== "function") return;
       resetSheetToRoot(dlg);
+      // Full-screen dim is a body::after scrim toggled via this class —
+      // a top-layer <dialog> can't dim behind the iOS status bar.
+      document.documentElement.classList.add("sheet-open");
       dlg.showModal();
     });
   });
@@ -182,6 +185,13 @@ function bindSheets() {
     });
     dlg.addEventListener("click", (e) => {
       if (e.target === dlg) dlg.close();
+    });
+    // `close` fires for every close path (X, outside tap, ESC, drag
+    // dismiss, repo select). Drop the scrim only when no sheet remains.
+    dlg.addEventListener("close", () => {
+      if (!document.querySelector("dialog.sheet[open]")) {
+        document.documentElement.classList.remove("sheet-open");
+      }
     });
     bindSheetDrag(dlg);
   });
