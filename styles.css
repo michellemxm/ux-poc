@@ -131,6 +131,12 @@
   --fg-subtle:     var(--prey-400);
   --fg-accent:     var(--purple-600);          /* "See all" link */
   --fg-on-inverse: var(--kiro-white);          /* text/icons on --bg-inverse */
+  /* Session status (menu list meta). Hex matches Figma 6:15403. */
+  --fg-status-blocked:   var(--red-700);       /* Figma Red/600   #BC0E26 */
+  --fg-status-working:   var(--purple-600);    /* Figma Purple/600 #8041E6 */
+  --fg-status-committed: var(--blue-600);      /* Figma Blue/600  #3B78DC */
+  --fg-status-pr-ready:  var(--orange-700);    /* Figma Orange/600 #B84300 */
+  --fg-status-merged:    var(--green-700);     /* Figma Green/600 #008543 */
   --divider:       var(--prey-200);
   --pressed:       rgba(0, 0, 0, 0.04);
   --hairline:      rgba(0, 0, 0, 0.08);
@@ -162,6 +168,11 @@
   --fg-subtle:     var(--prey-400);
   --fg-accent:     var(--purple-300);
   --fg-on-inverse: var(--kiro-plack);
+  --fg-status-blocked:   var(--red-400);
+  --fg-status-working:   var(--purple-300);
+  --fg-status-committed: var(--blue-400);
+  --fg-status-pr-ready:  var(--orange-400);
+  --fg-status-merged:    var(--green-400);
   --divider:       var(--prey-700);
   --pressed:       rgba(255, 255, 255, 0.06);
   --hairline:      rgba(255, 255, 255, 0.06);
@@ -681,6 +692,9 @@ html, body { height: 100lvh; }
   background: var(--divider);
   pointer-events: none;
 }
+/* The last row in a section's list owns no divider — the section
+   header below provides the separation. */
+.item-list .item:last-child::after { content: none; }
 
 /* Feature pills */
 .feature-list {
@@ -717,9 +731,8 @@ html, body { height: 100lvh; }
 }
 .section-header__title {
   margin: 0;
-  font: var(--type-caption);                /* Caption */
+  font: var(--type-h4);                     /* H4 */
   color: var(--fg-subtle);
-  letter-spacing: 0.02em;
 }
 .section-header__action {
   font: var(--type-caption);                /* Caption */
@@ -759,6 +772,13 @@ html, body { height: 100lvh; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Session status — colored lead token in the meta line. The rest of
+   the line stays --fg-muted; only this span is tinted. */
+.item__status--blocked   { color: var(--fg-status-blocked); }
+.item__status--working   { color: var(--fg-status-working); }
+.item__status--committed { color: var(--fg-status-committed); }
+.item__status--pr-ready  { color: var(--fg-status-pr-ready); }
+.item__status--merged    { color: var(--fg-status-merged); }
 
 /* =============================================================
    Chat screen (chat.html)
@@ -1315,9 +1335,8 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
 .repo-list__header {
   margin: 0;
   padding: 16px 24px 8px;
-  font: var(--type-caption);                /* Caption */
+  font: var(--type-h4);                     /* H4 — matches .section-header__title */
   color: var(--fg-subtle);
-  letter-spacing: 0.02em;
 }
 .repo-row {
   display: flex;
