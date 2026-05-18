@@ -286,29 +286,82 @@ function bindSheetDrag(dlg) {
 }
 
 /* =====================================================================
-   Theme selector (profile sheet → Theme view)
+   Theme — system / dark / light
    ---------------------------------------------------------------------
-   Re-bound on every init() because the sheet markup is replaced on
-   navigation. */
+   The user's CHOICE ("system" | "dark" | "light", default "system") is
+   stored in localStorage. We resolve it (system → prefers-color-scheme)
+   to a concrete theme and set data-theme on <html> so CSS only needs a
+   single :root[data-theme="dark"] override block. An inline <head>
+   bootstrap applies this pre-paint to avoid a flash; this module owns
+   updates, the OS-change listener, and the profile-sheet selector. */
+const THEME_KEY = "kiro-theme";
+const THEME_COLORS = { light: "#F2F1F4", dark: "#19161D" };
+
+function getThemeChoice() {
+  try { return localStorage.getItem(THEME_KEY) || "system"; } catch (_) { return "system"; }
+}
+function systemPrefersDark() {
+  return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
+function resolveTheme(choice) {
+  if (choice === "dark" || choice === "light") return choice;
+  return systemPrefersDark() ? "dark" : "light";
+}
+function applyTheme() {
+  const resolved = resolveTheme(getThemeChoice());
+  document.documentElement.dataset.theme = resolved;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta && THEME_COLORS[resolved]) meta.content = THEME_COLORS[resolved];
+}
+function setThemeChoice(choice) {
+  try { localStorage.setItem(THEME_KEY, choice); } catch (_) {}
+  applyTheme();
+}
+// Follow the OS while the choice is "system".
+if (window.matchMedia) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const onOSChange = () => { if (getThemeChoice() === "system") applyTheme(); };
+  if (mq.addEventListener) mq.addEventListener("change", onOSChange);
+  else if (mq.addListener) mq.addListener(onOSChange);
+}
+// iOS standalone PWAs often miss the matchMedia "change" event when the
+// OS theme flips while backgrounded — re-resolve "system" on return.
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && getThemeChoice() === "system") applyTheme();
+});
+window.addEventListener("pageshow", () => {
+  if (getThemeChoice() === "system") applyTheme();
+});
+applyTheme();
+
+/* Profile sheet → Theme view. Re-run on every init() because the sheet
+   markup is replaced on SPA navigation; reflects the stored choice and
+   binds the option rows (listener guarded once per dialog element). */
 function bindThemeSelector() {
   const sheet = document.getElementById("sheet-profile");
   if (!sheet) return;
-  if (sheet.dataset.themeBound) return;
-  sheet.dataset.themeBound = "1";
 
-  const rows = sheet.querySelectorAll("[data-theme]");
+  const rows = sheet.querySelectorAll(".option-row[data-theme]");
   const valueEl = sheet.querySelector("[data-theme-current]");
   const labels = { system: "System", dark: "Dark", light: "Light" };
 
+  const reflect = (choice) => {
+    rows.forEach((r) => {
+      const sel = r.getAttribute("data-theme") === choice;
+      r.classList.toggle("option-row--selected", sel);
+      r.setAttribute("aria-checked", String(sel));
+    });
+    if (valueEl && labels[choice]) valueEl.textContent = labels[choice];
+  };
+  reflect(getThemeChoice());
+
+  if (sheet.dataset.themeBound) return;
+  sheet.dataset.themeBound = "1";
   rows.forEach((row) => {
     row.addEventListener("click", () => {
       const theme = row.getAttribute("data-theme");
-      rows.forEach((r) => {
-        const selected = r === row;
-        r.classList.toggle("option-row--selected", selected);
-        r.setAttribute("aria-checked", String(selected));
-      });
-      if (valueEl && labels[theme]) valueEl.textContent = labels[theme];
+      setThemeChoice(theme);
+      reflect(theme);
     });
   });
 }

@@ -125,6 +125,7 @@
   --chrome-rgb:    242, 241, 244;              /* Prey/100 */
   --bg-chrome:     rgba(var(--chrome-rgb), 0.85);
   --bg-surface:    #FFFFFF;                    /* raised surfaces (search field, action pill) */
+  --bg-sheet:      #FFFFFF;                    /* bottom-sheet panel (darker than --bg-surface in dark so the close btn + dividers read) */
   --bg-inverse:    var(--kiro-plack);          /* always-dark elements (compose btn) */
   --fg-default:    var(--kiro-plack);
   --fg-muted:      var(--prey-500);
@@ -135,7 +136,7 @@
   --fg-status-blocked:   var(--red-700);       /* Figma Red/600   #BC0E26 */
   --fg-status-working:   var(--purple-600);    /* Figma Purple/600 #8041E6 */
   --fg-status-committed: var(--blue-600);      /* Figma Blue/600  #3B78DC */
-  --fg-status-pr-ready:  var(--orange-700);    /* Figma Orange/600 #B84300 */
+  --fg-status-pr-ready:  var(--teal-700);      /* teal #017B89 */
   --fg-status-merged:    var(--green-700);     /* Figma Green/600 #008543 */
   --divider:       var(--prey-200);
   --pressed:       rgba(0, 0, 0, 0.04);
@@ -157,35 +158,30 @@
   /* Wordmark fill (logo-kiro-text.svg is filled with Plack #141217). */
   --filter-wordmark: none; /* keep dark on light theme */
 
-  /* ---------- Theme: DARK (commented — restore for dark mode) ----------
-  --bg-app:        var(--kiro-black);
-  --chrome-rgb:    10, 9, 11;
-  --bg-chrome:     rgba(var(--chrome-rgb), 0.85);
-  --bg-surface:    var(--prey-800);
-  --bg-inverse:    var(--prey-100);
-  --fg-default:    var(--kiro-white);
-  --fg-muted:      var(--prey-300);
-  --fg-subtle:     var(--prey-400);
-  --fg-accent:     var(--purple-300);
-  --fg-on-inverse: var(--kiro-plack);
-  --fg-status-blocked:   var(--red-400);
-  --fg-status-working:   var(--purple-300);
-  --fg-status-committed: var(--blue-400);
-  --fg-status-pr-ready:  var(--orange-400);
-  --fg-status-merged:    var(--green-400);
-  --divider:       var(--prey-700);
-  --pressed:       rgba(255, 255, 255, 0.06);
-  --hairline:      rgba(255, 255, 255, 0.06);
-  --shadow-soft:   none;
-  --shadow-icon:   none;
+  /* Component surfaces/feedback that previously hardcoded scale tokens.
+     Light values equal the prior literals (no light regression); dark
+     overrides live in :root[data-theme="dark"] below. */
+  --bg-inset:         var(--prey-200);    /* avatar / inset icon-btn */
+  --bg-inset-pressed: var(--prey-300);    /* their :active */
+  --grabber:          var(--prey-300);    /* sheet drag handle */
+  --bg-chip:          var(--prey-200);    /* op-row file pill */
+  --bg-code:          var(--prey-100);    /* code <pre> surface */
 
-  --filter-icon-fg:        none;
-  --filter-icon-muted:     brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%);
-  --filter-icon-subtle:    brightness(0) saturate(100%) invert(80%) sepia(5%) saturate(150%) hue-rotate(231deg);
-  --filter-icon-on-inverse: brightness(0);
+  --bg-success: var(--green-100);  --fg-success: var(--green-700);
+  --bg-danger:  var(--red-100);    --fg-danger:  var(--red-700);
+  --bg-warn:    var(--yellow-100); --fg-warn:    var(--yellow-700);
 
-  --filter-wordmark: invert(1) brightness(2);
-  ---------------------------------------------------------------- */
+  --bg-diff-add: var(--green-100); --fg-diff-add: var(--green-900);
+  --bg-diff-del: var(--red-100);   --fg-diff-del: var(--red-900);
+
+  --fg-code-prompt:  var(--green-700);
+  --fg-code-string:  var(--orange-700);
+  --fg-code-keyword: var(--purple-700);
+  --fg-code-hash:    var(--blue-700);
+
+  --bg-user-bubble:    rgba(128, 65, 230, 0.10);  /* Purple/600 @ 10% */
+  --bg-user-code:      rgba(85, 43, 153, 0.10);
+  --fg-on-user-bubble: var(--purple-900);
 
   /* Fixed-bar heights (excluding safe-area) */
   --top-bar-h:    56px;
@@ -211,6 +207,68 @@
   --type-micro:     400 11px/11px var(--font-ui);
   --type-code:      400 15px/23px var(--font-mono);
   --type-code-sm:   400 13px/20px var(--font-mono);
+}
+
+/* ---------- Theme: DARK ----------
+   Base :root is Light. app.js (and an inline <head> bootstrap) sets
+   data-theme on <html> to the RESOLVED theme ("light"/"dark"); "system"
+   is resolved in JS from prefers-color-scheme, so CSS only needs this
+   one override block. Colors mapped from Figma 154:67063 / 154:67216.
+   Per product spec: NO shadows in dark. Theming only swaps these
+   variables — no layout/behavior rules here. */
+:root[data-theme="dark"] {
+  --bg-app:        var(--prey-900);            /* #19161D — page bg */
+  --chrome-rgb:    25, 22, 29;                 /* Prey/900 — chrome gradient base */
+  --bg-chrome:     rgba(var(--chrome-rgb), 0.85);
+  --bg-surface:    var(--prey-700);            /* #352F3D — raised controls (pill, search) */
+  --bg-sheet:      var(--prey-800);            /* #211D25 — sheet panel (close btn / dividers are --bg-surface/--divider = #352F3D, now visible) */
+  --bg-inverse:    var(--kiro-purple);         /* #8E47FF — compose btn */
+  --fg-default:    var(--kiro-white);
+  --fg-muted:      var(--prey-300);            /* #C1BEC6 */
+  --fg-subtle:     var(--prey-400);            /* #938F9B */
+  --fg-accent:     var(--purple-400);          /* #9F63FF — links / "See all" */
+  --fg-on-inverse: var(--kiro-white);          /* white icon on purple compose */
+
+  --fg-status-blocked:   var(--red-400);       /* Figma Red/400   #F94359 */
+  --fg-status-working:   var(--purple-400);    /* Figma Purple/400 #9F63FF */
+  --fg-status-committed: var(--blue-600);      /* Figma Blue/600  #3B78DC */
+  --fg-status-pr-ready:  var(--teal-400);      /* teal #45CBD3 */
+  --fg-status-merged:    var(--green-400);     /* Figma Green/400 #33D480 */
+
+  --divider:       var(--prey-700);
+  --pressed:       rgba(255, 255, 255, 0.06);
+  --hairline:      rgba(255, 255, 255, 0.06);
+  --shadow-soft:   none;                       /* no shadows in dark */
+  --shadow-icon:   none;
+
+  --bg-inset:         var(--prey-800);         /* #211D25 */
+  --bg-inset-pressed: var(--prey-600);
+  --grabber:          var(--prey-700);   /* #352F3D — Figma handle */
+  --bg-chip:          var(--prey-700);
+  --bg-code:          var(--prey-800);
+
+  --bg-success: var(--green-900);  --fg-success: var(--green-400);
+  --bg-danger:  var(--red-900);    --fg-danger:  var(--red-400);
+  --bg-warn:    var(--yellow-900); --fg-warn:    var(--yellow-400);
+
+  --bg-diff-add: var(--green-900); --fg-diff-add: var(--green-400);
+  --bg-diff-del: var(--red-900);   --fg-diff-del: var(--red-400);
+
+  --fg-code-prompt:  var(--green-400);
+  --fg-code-string:  var(--orange-400);
+  --fg-code-keyword: var(--purple-300);
+  --fg-code-hash:    var(--blue-400);
+
+  --bg-user-bubble:    rgba(158, 99, 255, 0.18); /* Purple/400 tint */
+  --bg-user-code:      rgba(158, 99, 255, 0.16);
+  --fg-on-user-bubble: var(--purple-100);        /* #D2B6FF */
+
+  --filter-icon-fg:        none;                /* white SVG stays white */
+  --filter-icon-muted:     brightness(0) saturate(100%) invert(86%) sepia(6%) saturate(180%) hue-rotate(231deg) brightness(92%) contrast(88%); /* ≈ prey-300 */
+  --filter-icon-subtle:    brightness(0) saturate(100%) invert(64%) sepia(7%) saturate(229%) hue-rotate(231deg) brightness(92%) contrast(86%); /* ≈ prey-400 */
+  --filter-icon-on-inverse: none;               /* white icon on purple */
+
+  --filter-wordmark: brightness(0) invert(1);   /* Plack wordmark → white */
 }
 
 /* ---------- Page-to-page slide (same-document View Transitions) ----------
@@ -431,7 +489,7 @@ html, body { height: 100lvh; }
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--prey-200);
+  background: var(--bg-inset);
   color: var(--fg-default);
   font: var(--type-h4);                /* H4 */
   display: inline-flex;
@@ -439,7 +497,7 @@ html, body { height: 100lvh; }
   justify-content: center;
   flex: 0 0 auto;
 }
-.avatar-btn:active { background: var(--prey-300); }
+.avatar-btn:active { background: var(--bg-inset-pressed); }
 
 /* ---------- Scrollable content ----------
    Fills the entire app shell. The fixed bars overlay it, so we pad
@@ -599,12 +657,12 @@ html, body { height: 100lvh; }
   height: 48px;
   padding: 8px;
   background: var(--bg-surface);
-  border: 1px dashed var(--prey-300);
+  border: 1px dashed var(--divider);
   border-radius: 20px;
   text-align: left;
   cursor: pointer;
 }
-.bottom-bar--connect .connect-btn:active { background: var(--prey-100); }
+.bottom-bar--connect .connect-btn:active { background: var(--pressed); }
 .connect-btn__icon {
   width: 32px;
   height: 32px;
@@ -804,7 +862,7 @@ html, body { height: 100lvh; }
   box-shadow: var(--shadow-soft);
   text-decoration: none;
 }
-.icon-btn--pill:active { background: var(--prey-100); }
+.icon-btn--pill:active { background: var(--pressed); }
 
 /* Small inset button used inside a parent pill / chat input.
    32x32, Prey/200 background. Two shapes:
@@ -816,13 +874,13 @@ html, body { height: 100lvh; }
 .icon-btn.icon-btn--inset-rounded {
   width: 32px;
   height: 32px;
-  background: var(--prey-200);
+  background: var(--bg-inset);
   flex: 0 0 auto;
 }
 .icon-btn.icon-btn--inset-circle  { border-radius: 50%; }
 .icon-btn.icon-btn--inset-rounded { border-radius: 10px; }
 .icon-btn.icon-btn--inset-circle:active,
-.icon-btn.icon-btn--inset-rounded:active { background: var(--prey-300); }
+.icon-btn.icon-btn--inset-rounded:active { background: var(--bg-inset-pressed); }
 
 /* Title block — left-aligned model selector + meta line. */
 .chat-title {
@@ -903,13 +961,13 @@ html, body { height: 100lvh; }
   max-width: 85%;
   margin: 8px 0;
   padding: 12px;
-  background: rgba(128, 65, 230, 0.10);  /* Purple/600 @ 10% */
+  background: var(--bg-user-bubble);
   border-radius: 16px 0 16px 16px;
 }
-.msg--user .msg__text { color: var(--purple-900); }
+.msg--user .msg__text { color: var(--fg-on-user-bubble); }
 .msg--user .inline-code {
-  background: rgba(85, 43, 153, 0.10);
-  color: var(--purple-900);
+  background: var(--bg-user-code);
+  color: var(--fg-on-user-bubble);
 }
 
 /* Agent message: full-row text, no bubble. */
@@ -1006,14 +1064,14 @@ html, body { height: 100lvh; }
   align-items: center;
   gap: 4px;
   padding: 1px 6px;
-  background: var(--prey-200);
+  background: var(--bg-chip);
   border-radius: 5px;
   font: var(--type-code-sm);                /* Code-sm */
   color: var(--fg-muted);
   flex: 0 0 auto;
 }
 .op-row__filepill__ext {
-  color: var(--yellow-700);
+  color: var(--fg-warn);
   font: var(--type-micro);                /* Micro */
   padding: 0 4px;
   letter-spacing: 0.02em;
@@ -1028,13 +1086,13 @@ html, body { height: 100lvh; }
   letter-spacing: 0.02em;
   flex: 0 0 auto;
 }
-.op-row__pill--ok   { background: var(--green-100); color: var(--green-700); }
-.op-row__pill--fail { background: var(--red-100);   color: var(--red-700); }
-.op-row__pill--warn { background: var(--yellow-100); color: var(--yellow-700); }
+.op-row__pill--ok   { background: var(--bg-success); color: var(--fg-success); }
+.op-row__pill--fail { background: var(--bg-danger);  color: var(--fg-danger); }
+.op-row__pill--warn { background: var(--bg-warn);    color: var(--fg-warn); }
 
 .op-row__stat { font: var(--type-code-sm); flex: 0 0 auto; }  /* Code-sm */
-.op-row__stat--add { color: var(--green-700); }
-.op-row__stat--del { color: var(--red-700); }
+.op-row__stat--add { color: var(--fg-success); }
+.op-row__stat--del { color: var(--fg-danger); }
 
 .op-row__chevron { width: 16px; height: 16px; flex: 0 0 auto; }
 
@@ -1113,7 +1171,7 @@ html.sheet-open body::after { opacity: 1; }
   bottom: 8px;
   display: flex;
   flex-direction: column;
-  background: var(--bg-surface);
+  background: var(--bg-sheet);
   border-radius: 36px 36px 56px 56px;
   overflow: hidden;
   padding-bottom: env(safe-area-inset-bottom);
@@ -1135,7 +1193,7 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   width: 36px;
   height: 5px;
   border-radius: 999px;
-  background: var(--prey-300);
+  background: var(--grabber);
   margin: 8px auto 4px;
   flex: 0 0 auto;
 }
@@ -1159,7 +1217,7 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   align-items: center;
   justify-content: center;
 }
-.sheet__close:active { background: var(--prey-100); }
+.sheet__close:active { background: var(--pressed); }
 .sheet__title-block {
   text-align: center;
   display: flex;
@@ -1211,7 +1269,7 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   flex-direction: column;
   /* Opaque background is critical — without it the leaving view shows
      through the entering view during the slide, which looks buggy. */
-  background: var(--bg-surface);
+  background: var(--bg-sheet);
 }
 .sheet__view[hidden] { display: none; }
 
@@ -1416,7 +1474,7 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   margin: 0;
   padding: 12px;
   font: var(--type-code-sm);                /* Code-sm */
-  background: var(--prey-100);
+  background: var(--bg-code);
   border-radius: 10px;
   color: var(--fg-default);
   overflow-x: auto;
@@ -1427,7 +1485,7 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
   margin: 0;
   padding: 0;
   font: var(--type-code);                /* Code */
-  background: var(--prey-100);
+  background: var(--bg-code);
   color: var(--fg-default);
   overflow-x: auto;
   white-space: pre;
@@ -1442,18 +1500,18 @@ dialog.sheet[open] .sheet__panel { transform: translateY(0); }
 }
 .sheet__diff .code { padding: 0 8px 0 0; }
 .sheet__diff .row-add .ln,
-.sheet__diff .row-add .code { background: var(--green-100); color: var(--green-900); }
+.sheet__diff .row-add .code { background: var(--bg-diff-add); color: var(--fg-diff-add); }
 .sheet__diff .row-del .ln,
-.sheet__diff .row-del .code { background: var(--red-100); color: var(--red-900); text-decoration: line-through; }
+.sheet__diff .row-del .code { background: var(--bg-diff-del); color: var(--fg-diff-del); text-decoration: line-through; }
 
 /* Code highlighting tokens shared by .sheet__code and inline op bodies. */
-.hl-prompt   { color: var(--green-700); }
+.hl-prompt   { color: var(--fg-code-prompt); }
 .hl-comment  { color: var(--fg-subtle); }
-.hl-string   { color: var(--orange-700); }
-.hl-keyword  { color: var(--purple-700); }
-.hl-hash     { color: var(--blue-700); }
-.hl-added    { color: var(--green-700); display: block; background: var(--green-100); margin: 0 -14px; padding: 0 14px; }
-.hl-removed  { color: var(--red-700);   display: block; background: var(--red-100);   margin: 0 -14px; padding: 0 14px; text-decoration: line-through; }
+.hl-string   { color: var(--fg-code-string); }
+.hl-keyword  { color: var(--fg-code-keyword); }
+.hl-hash     { color: var(--fg-code-hash); }
+.hl-added    { color: var(--fg-success); display: block; background: var(--bg-success); margin: 0 -14px; padding: 0 14px; }
+.hl-removed  { color: var(--fg-danger);  display: block; background: var(--bg-danger);  margin: 0 -14px; padding: 0 14px; text-decoration: line-through; }
 
 /* -------- Bottom bar variant for chat ----------
    This is a CHAT INPUT, not a search field — it's purpose-built for

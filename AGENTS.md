@@ -225,23 +225,23 @@ Font stack:
 
 ## 6. Theming
 
-> **Rule — always implement color as if both Light AND Dark themes exist.**
-> Only Light is active today, but Dark is a real future target, not hypothetical. Whenever you touch anything color-related:
-> - Never hard-code a color value (hex/rgb/hsl) in a component. Read a theme-aware **semantic token** (`--fg-*`, `--bg-*`, `--divider`, …). If no token fits, add one — don't inline.
-> - Every new color/tint **must be defined in BOTH the Light `:root` block and the Dark block** in the same change, even though Dark is commented out. A token that only exists in Light will break the day Dark is enabled.
-> - Recoloring techniques must be theme-aware too: SVG tinting (`filter`/`mask` + `background-color`) must resolve to a token (e.g. `var(--fg-accent)`, `var(--filter-icon-*)`) so it flips automatically — never a raw filter/color baked for Light only.
-> - Prefer an exact-color technique (`mask` + `background-color: var(--token)`) over an approximate one (`filter:` solved for one hex) when a color must match a sibling exactly — a filter can't hit an exact token and won't track a theme swap.
-> - The Dark block is a single `/* … */` comment. **Never put a `/* … */` comment inside it** (CSS comments don't nest — an inner `*/` closes the block early and corrupts the rest of `:root`). Annotate dark values with a trailing token name, no `/* */`.
+> **Rule — Light AND Dark are both live. Every page must support both.**
+> Whenever you touch anything color-related:
+> - Never hard-code a color value (hex/rgb/hsl) or a raw scale token (`--prey-700`, `--green-100`) in a component. Read a theme-aware **semantic token** (`--fg-*`, `--bg-*`, `--divider`, `--fg-status-*`, …). If none fits, add one — don't inline.
+> - Every new token **must be defined in BOTH the Light `:root` block and the `:root[data-theme="dark"]` block** in the same change. Its Light value must equal whatever literal it replaces (never regress Light).
+> - Recoloring techniques must be theme-aware too: SVG tinting (`filter`/`mask` + `background-color`) must resolve to a token (`var(--fg-accent)`, `var(--filter-icon-*)`) so it flips automatically.
+> - Prefer exact `mask` + `background-color: var(--token)` over a one-hex-solved `filter:` when a color must match a sibling — a filter can't hit an exact token and won't track the theme.
+> - **No shadows in dark** — `--shadow-soft`/`--shadow-icon` are `none` in the dark block; don't add raw `box-shadow`/`drop-shadow` to components.
+> - Enabling a theme must not change any layout or interaction — the dark block contains **only variable swaps**, no layout/positioning rules.
 
-The active theme is **Light**. The Dark theme block is kept inline as a `/* … */` comment immediately below it in `styles.css`. When swapping themes later:
+### How theming works (active)
 
-- Move the Light block into a `[data-theme="light"]` selector and Dark into `[data-theme="dark"]`, or wrap with `@media (prefers-color-scheme: dark)`.
-- Update `<meta name="theme-color">`, `<meta name="apple-mobile-web-app-status-bar-style">`, and `manifest.background_color/theme_color` accordingly.
+- **Light** = base `:root`. **Dark** = `:root[data-theme="dark"]` (a single override block of variables only). Colors are mapped from Figma `154:67063` (menu) / `154:67216` (conversation).
+- `data-theme` on `<html>` is the **resolved** theme (`"light"`/`"dark"`). "system" is resolved in JS from `prefers-color-scheme`, so CSS needs only the one dark block.
+- User choice (`"system"|"dark"|"light"`, default **system**) is in `localStorage["kiro-theme"]`, set via profile sheet → Theme. `app.js` (`applyTheme`/`setThemeChoice`/`bindThemeSelector`) owns updates + the OS-change listener; an inline `<head>` bootstrap applies it pre-paint (no flash) and must stay in every page's `<head>`.
+- `applyTheme()` also swaps `<meta name="theme-color">` (`#F2F1F4` / `#19161D`). Note: `apple-mobile-web-app-status-bar-style` is install-baked on iOS and can't change post-install.
 
-When adding new tokens:
-- Add them to **both** Light and Dark blocks at the same time.
-- Add to the semantic table above.
-- Use them in components — don't reach for scale values directly.
+When adding a new screen: reuse the shell, keep the `<head>` theme bootstrap, and only use semantic tokens so it themes for free.
 
 ---
 

@@ -15,7 +15,11 @@
   <link rel="apple-touch-icon" href="./assets/kiro-app.png" />
 
   <link rel="icon" type="image/png" href="./assets/kiro-app.png" />
-  <link rel="stylesheet" href="./styles.css?v=42" />
+  <link rel="stylesheet" href="./styles.css?v=45" />
+
+  <!-- Theme bootstrap — resolve & apply before first paint (no flash).
+       app.js owns updates, the OS-change listener and the selector. -->
+  <script>(function(){try{var c=localStorage.getItem('kiro-theme')||'system';var d=c==='dark'||(c==='system'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.dataset.theme=d?'dark':'light';var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?'#19161D':'#F2F1F4';}catch(e){}})();</script>
 </head>
 <body>
   <div class="app">
@@ -280,6 +284,6 @@ cc814e9 test: add auth flow integration tests
     </div>
   </dialog>
 
-  <script src="./app.js?v=42"></script>
+  <script src="./app.js?v=45"></script>
 </body>
 </html>
